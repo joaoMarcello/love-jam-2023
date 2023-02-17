@@ -28,11 +28,15 @@ function Wire:__constructor__(state, panel, args)
     self.gamestate = state
     self.panel = panel
 
-    self.id = 4 --args.id
+    self.id = math.random(1, 4) --args.id
     self.pos_init = ((self.id - 1) * 3) + 1
 
     self.pieces = {}
-    self.pos = { 7, 4, 10 }
+    self.pos = {
+        math.random(1, self.panel.max_column),
+        math.random(1, self.panel.max_column),
+        math.random(1, self.panel.max_column)
+    }
 
     -- self.path = {
     --     { 1, 5 },

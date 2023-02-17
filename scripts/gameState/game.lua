@@ -44,6 +44,10 @@ State:implements {
             State.camera:toggle_debug()
             State.camera:toggle_world_bounds()
         end
+
+        if key == "r" then
+            State:init()
+        end
     end,
     --
     --
