@@ -2,6 +2,9 @@ local Pack = _G.Pack
 local Utils = _G.JM_Utils
 local Anima = _G.JM_Anima
 
+local SCREEN_HEIGHT = 32 * 12
+local SCREEN_WIDTH = SCREEN_HEIGHT * 1.5
+
 ---@class GameState.Splash: GameState
 local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT)
 State.camera:toggle_debug()
