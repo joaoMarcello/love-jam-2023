@@ -28,24 +28,32 @@ function Wire:__constructor__(state, panel, args)
     self.gamestate = state
     self.panel = panel
 
-    self.id = args.id
+    self.id = 4 --args.id
     self.pos_init = ((self.id - 1) * 3) + 1
 
     self.pieces = {}
-    self.pos = { 5, 9, 7 }
+    self.pos = { 7, 4, 10 }
 
-    self.path = {
-        { 1, 5 },
-        { 5, 5 },
-        { 5, 9 },
-        { 9, 9 },
-        { 9, 7 },
-        { 7, 7 }
-    }
+    -- self.path = {
+    --     { 1, 5 },
+    --     { 5, 5 },
+    --     { 5, 9 },
+    --     { 9, 9 },
+    --     { 9, 7 },
+    --     { 7, 7 }
+    -- }
 
-    -- for i = 1, 6 do
-    --     self.path[i] = {}
-    -- end
+    self.path = {}
+
+    for i = 1, 3 do
+        if i == 1 then
+            self.path[1] = { self.pos_init, self.pos[i] }
+        else
+            self.path[(i + (i - 1))] = { self.pos[i - 1], self.pos[i] }
+        end
+
+        self.path[i + i] = { self.pos[i], self.pos[i] }
+    end
 
     -- self.path = {
     --     { 7,  7 },
@@ -110,7 +118,7 @@ function Wire:__constructor__(state, panel, args)
                 end -- END Linha IMPAR
 
                 -- FIRST PIECE
-                if i == 1 and k == node.left then
+                if i == 1 and k == self.pos_init then
                     if node.first < node.second then
                         type_ = "bottom-left"
                     elseif node.first > node.second then
