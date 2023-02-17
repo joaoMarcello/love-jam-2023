@@ -28,14 +28,16 @@ function Wire:__constructor__(state, panel, args)
     self.gamestate = state
     self.panel = panel
 
-    self.id = math.random(1, 4) --args.id
+    self.id = args.id
     self.pos_init = ((self.id - 1) * 3) + 1
+    self.x = self.panel.x + 32 * (self.pos_init - 1)
 
     self.pieces = {}
     self.pos = {
         math.random(1, self.panel.max_column),
         math.random(1, self.panel.max_column),
         math.random(1, self.panel.max_column)
+        -- 1, 5, 4
     }
 
     -- self.path = {
@@ -49,23 +51,59 @@ function Wire:__constructor__(state, panel, args)
 
     self.path = {}
 
-    for i = 1, 3 do
-        if i == 1 then
-            self.path[1] = { self.pos_init, self.pos[i] }
-        else
-            self.path[(i + (i - 1))] = { self.pos[i - 1], self.pos[i] }
-        end
+    if self.id % 2 ~= 0 then
+        for i = 1, 3 do
+            if i == 1 then
+                self.path[1] = { self.pos_init, self.pos[i] }
+            else
+                self.path[(i + (i - 1))] = { self.pos[i - 1], self.pos[i] }
+            end
 
-        self.path[i + i] = { self.pos[i], self.pos[i] }
+            self.path[i + i] = { self.pos[i], self.pos[i] }
+        end
+        --
+    else
+        for i = 1, 3 do
+            if i == 1 then
+                self.path[1] = { self.pos_init, self.pos_init }
+                self.path[2] = { self.pos_init, self.pos[i] }
+                self.path[3] = { self.pos[i], self.pos[i] }
+            elseif i == 2 then
+                self.path[4] = { self.pos[i - 1], self.pos[i] }
+                self.path[5] = { self.pos[i], self.pos[i] }
+            elseif i == 3 then
+                self.path[6] = { self.pos[i - 1], self.pos[i] }
+                -- else
+                --     self.path[(i + (i - 1))] = { self.pos[i], self.pos[i] }
+                --     self.path[i + i] = { self.pos[i - 1], self.pos[i] }
+            end
+        end
     end
+    -- self.path = {
+    --     { 7, 7 },
+    --     { 7, 7 },
+    --     { 7, 4 },
+    --     { 4, 4 },
+    --     { 4, 1 },
+    --     { 1, 1 }
+    -- }
 
     -- self.path = {
-    --     { 7,  7 },
-    --     { 7,  7 },
-    --     { 7,  4 },
-    --     { 4,  4 },
-    --     { 4,  10 },
-    --     { 10, 10 }
+    --     { 4, 4 },
+    --     { 4, 2 },
+    --     { 2, 2 },
+    --     { 2, 6 },
+    --     { 6, 6 },
+    --     { 6, 1 }
+    -- }
+
+    -- self.path = {
+    --     { 10, 10 },
+    --     { 10, 1 },
+    --     { 1,  1 },
+    --     { 1,  5 },
+    --     { 5,  5 },
+    --     { 5,  4 }
     -- }
 
     local get_node = function(p)
@@ -131,6 +169,17 @@ function Wire:__constructor__(state, panel, args)
                         type_ = "left"
                     end
                 end
+
+                -- LAST PIECE
+                if i == #(self.path) and k == node.second then
+                    if node.first > node.second then
+                        type_ = "top-left"
+                    elseif node.first < node.second then
+                        type_ = "top-right"
+                    else
+                        type_ = "left"
+                    end
+                end
                 --
             else -- PAR - EVEN
 
@@ -191,7 +240,9 @@ function Wire:draw()
         local piece = self.pieces[i]
         piece:draw()
     end
-    Pack.Font:print(self.pos_init, self.x, self.y - 20)
+    Pack.Font:print("" .. self.pos[1] .. "-" .. self.pos[2] .. "-" .. self.pos[3], self.x, self.y - 20)
+
+    Pack.Font:print(self.pos_init, self.x, self.y - 40)
 end
 
 return Wire

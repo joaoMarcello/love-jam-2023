@@ -34,10 +34,41 @@ function Panel:__constructor__(state, args)
     self.max_row = (3 * 2)
 
     self.wires = {}
+
     self.wires[1] = Wire:new(state, self, {
         x = self.x,
-        y = self.y
+        y = self.y,
+        id = 1
     })
+
+    self.wires[2] = Wire:new(state, self, {
+        x = self.x,
+        y = self.y,
+        id = 2
+    })
+
+    self.wires[3] = Wire:new(state, self, {
+        x = self.x,
+        y = self.y,
+        id = 3
+    })
+
+    self.wires[4] = Wire:new(state, self, {
+        x = self.x,
+        y = self.y,
+        id = 4
+    })
+
+    table.sort(self.wires, function(a, b)
+        return a.draw_order < b.draw_order
+    end)
+    -- self.wires[3] = Wire:new(state, self, {
+    --     x = self.x,
+    --     y = self.y,
+    --     id = 3
+    -- })
+
+    self.n_wires = #self.wires
 end
 
 --==========================================================================
@@ -59,9 +90,11 @@ end
 function Panel:update(dt)
     Component.update(self, dt)
 
-    ---@type Game.Component.Wire
-    local wire = self.wires[1]
-    wire:update(dt)
+    for i = 1, self.n_wires do
+        ---@type Game.Component.Wire
+        local wire = self.wires[i]
+        wire:update(dt)
+    end
 end
 
 function Panel:my_draw()
@@ -71,9 +104,11 @@ function Panel:my_draw()
     love.graphics.setColor(0, 0, 0, 1)
     love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
 
-    ---@type Game.Component.Wire
-    local wire = self.wires[1]
-    wire:draw()
+    for i = 1, self.n_wires do
+        ---@type Game.Component.Wire
+        local wire = self.wires[i]
+        wire:draw()
+    end
 end
 
 function Panel:draw()
