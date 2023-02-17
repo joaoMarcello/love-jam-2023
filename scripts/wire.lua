@@ -34,16 +34,109 @@ function Wire:__constructor__(state, panel, args)
     self.pieces = {}
     self.pos = { 5, 9, 7 }
 
+    self.path = {
+        { 1, 5 },
+        { 5, 5 },
+        { 5, 9 },
+        { 9, 9 },
+        { 9, 7 },
+        { 7, 7 }
+    }
 
-    self.pieces[1] = Piece:new(state, {
-        x = self.x,
-        y = self.y,
-        type = "bottom-left"
-    })
-    self.pieces[2] = Piece:new(state, {
-        x = self.x + 32,
-        y = self.y
-    })
+    -- for i = 1, 6 do
+    --     self.path[i] = {}
+    -- end
+
+    -- self.path = {
+    --     { 7,  7 },
+    --     { 7,  7 },
+    --     { 7,  4 },
+    --     { 4,  4 },
+    --     { 4,  10 },
+    --     { 10, 10 }
+    -- }
+
+    local get_node = function(p)
+        local first, second = p[1], p[2]
+        local left = first < second and first or second
+        local right = left == first and second or first
+        return {
+            first = first,
+            second = second,
+            left = left,
+            right = right
+        }
+    end
+
+    for i, p in ipairs(self.path) do
+        local node = get_node(p)
+        local prev = self.path[i - 1] and get_node(self.path[i - 1])
+        local next = self.path[i + 1] and get_node(self.path[i + 1])
+
+        for k = node.left, node.right do
+            local type_ = "top-middle"
+
+            -- IMPAR - ODD
+            if true then
+                if node.left == node.right then
+                    type_ = "left"
+                else
+                    if k == node.right then
+                        if next and (next.right == node.right
+                            or next.left == node.right)
+                        then
+                            type_ = "top-right"
+                        end
+
+                        if prev and (prev.left == node.right
+                            or prev.right == node.right)
+                        then
+                            type_ = "bottom-right"
+                        end
+                        --
+                    elseif k == node.left then
+                        if prev and (prev.left == node.left
+                            or prev.right == node.left)
+                        then
+                            type_ = "bottom-left"
+                        end
+
+                        if next and (next.left == node.left
+                            or next.right == node.left)
+                        then
+                            type_ = "top-left"
+                        end
+                    end
+                end -- END Linha IMPAR
+
+                -- FIRST PIECE
+                if i == 1 and k == node.left then
+                    if node.first < node.second then
+                        type_ = "bottom-left"
+                    elseif node.first > node.second then
+                        type_ = "bottom-right"
+                    else
+                        type_ = "left"
+                    end
+                end
+                --
+            else -- PAR - EVEN
+
+            end -- END EVEN WIRE
+
+
+
+
+            local piece = Piece:new(state, {
+                x = self.panel.x + (32 * (k - 1)),
+                y = self.panel.y + (32 * (i - 1)),
+                type = type_
+            })
+
+            table.insert(self.pieces, piece)
+        end
+        -- break
+    end
 
     self.n_pieces = #self.pieces
 end

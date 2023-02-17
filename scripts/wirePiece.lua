@@ -62,6 +62,8 @@ function Piece:__constructor__(state, args)
             Map[args.type]
         }
     }
+
+    self.anima:set_color2(1, 1, 1, 1)
 end
 
 function Piece:load()
