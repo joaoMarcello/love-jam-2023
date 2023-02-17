@@ -40,7 +40,8 @@ function Piece:new(state, args)
     args.y = args.y or (32 * 3)
     args.w = 32
     args.h = 32
-    args.type = args.type and Types[args.type] or Types["top-middle"]
+    args.id = args.type or "top-middle"
+    args.type = Types[args.type]
 
     local obj = Component:new(state, args)
     setmetatable(obj, self)
@@ -54,6 +55,9 @@ function Piece:__constructor__(state, args)
 
     self.ox = self.w / 2
     self.oy = self.h / 2
+
+    ---@type string
+    self.id = args.id
 
     self.anima = Anima:new {
         img = img or '',
@@ -81,9 +85,17 @@ function Piece:update(dt)
 end
 
 function Piece:draw()
+    if self.id:match("middle") or true then
+        self:draw_shadow()
+    end
+
+    self.anima:set_color2(1, 1, 1, 1)
     self.anima:draw_rec(self.x, self.y, self.w, self.h)
-    love.graphics.setColor(1, 1, 1, 1)
-    -- love.graphics.circle("fill", self.x, self.y, 32)
+end
+
+function Piece:draw_shadow()
+    self.anima:set_color2(0, 0, 0, 0.3)
+    self.anima:draw_rec(self.x, self.y + 5, self.w, self.h)
 end
 
 return Piece

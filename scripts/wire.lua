@@ -13,7 +13,7 @@ Wire.__index = Wire
 function Wire:new(state, panel, args)
     args = args or {}
     args.x = args.x or 32
-    args.y = args.y or (32 * 2)
+    args.y = panel.y
     args.id = args.id or 1
 
     local obj = Component:new(state, args)
@@ -33,12 +33,19 @@ function Wire:__constructor__(state, panel, args)
     self.x = self.panel.x + 32 * (self.pos_init - 1)
 
     self.pieces = {}
-    self.pos = {
-        math.random(1, self.panel.max_column),
-        math.random(1, self.panel.max_column),
-        math.random(1, self.panel.max_column)
-        -- 1, 5, 4
-    }
+
+    self.pos = {}
+    if self:is_even() then
+        self.pos[1] = panel:get_path(2, self, self.pos_init)
+        self.pos[2] = panel:get_path(4, self, self.pos[1])
+        self.pos[3] = panel:get_socket()
+    else
+        self.pos[1] = panel:get_path(1, self, self.pos_init)
+        self.pos[2] = panel:get_path(3, self, self.pos[1])
+        self.pos[3] = panel:get_socket()
+    end
+
+    self.socket = self.pos[3]
 
     -- self.path = {
     --     { 1, 5 },
@@ -73,9 +80,6 @@ function Wire:__constructor__(state, panel, args)
                 self.path[5] = { self.pos[i], self.pos[i] }
             elseif i == 3 then
                 self.path[6] = { self.pos[i - 1], self.pos[i] }
-                -- else
-                --     self.path[(i + (i - 1))] = { self.pos[i], self.pos[i] }
-                --     self.path[i + i] = { self.pos[i - 1], self.pos[i] }
             end
         end
     end
@@ -118,6 +122,8 @@ function Wire:__constructor__(state, panel, args)
         }
     end
 
+    local last = nil
+
     for i, p in ipairs(self.path) do
         local node = get_node(p)
         local prev = self.path[i - 1] and get_node(self.path[i - 1])
@@ -129,7 +135,13 @@ function Wire:__constructor__(state, panel, args)
             -- IMPAR - ODD
             if true then
                 if node.left == node.right then
-                    type_ = "left"
+                    if last and last:match("left") then
+                        type_ = "left"
+                    elseif last and last:match("right") then
+                        type_ = "right"
+                    else
+                        type_ = "left"
+                    end
                 else
                     if k == node.right then
                         if next and (next.right == node.right
@@ -185,8 +197,7 @@ function Wire:__constructor__(state, panel, args)
 
             end -- END EVEN WIRE
 
-
-
+            last = type_
 
             local piece = Piece:new(state, {
                 x = self.panel.x + (32 * (k - 1)),
@@ -223,6 +234,14 @@ function Wire:finish()
     img = nil
 end
 
+function Wire:is_even()
+    return self.id % 2 == 0
+end
+
+function Wire:is_odd()
+    return self.id % 2 ~= 0
+end
+
 function Wire:update(dt)
     for i = 1, self.n_pieces do
         ---@type Game.Component.Piece
@@ -233,13 +252,15 @@ end
 
 function Wire:draw()
     love.graphics.setColor(0, 0, 0, 0.5)
-    love.graphics.rectangle("fill", self.x, self.y, 32, 32)
+    -- love.graphics.rectangle("fill", self.x, self.y, 32, 32)
 
     for i = 1, self.n_pieces do
         ---@type Game.Component.Piece
         local piece = self.pieces[i]
         piece:draw()
     end
+
+
     Pack.Font:print("" .. self.pos[1] .. "-" .. self.pos[2] .. "-" .. self.pos[3], self.x, self.y - 20)
 
     Pack.Font:print(self.pos_init, self.x, self.y - 40)
