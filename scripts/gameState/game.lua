@@ -1,5 +1,7 @@
 local love = _G.love
-local Pack = _G.Pack
+local Pack = _G.JM_Love2D_Package
+
+local Panel = require "scripts.panel"
 
 ---@class GameState.Game : JM.Scene, GameState
 local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT,
@@ -14,9 +16,18 @@ State.camera:toggle_debug()
 State.camera:toggle_grid()
 State.camera:toggle_world_bounds()
 State.camera.border_color = { 0, 0, 0, 0 }
-
 --============================================================================
-State:implements({
+---@type Game.Component.Panel
+local panel
+--============================================================================
+State:implements {
+    --
+    --
+    init = function()
+        panel = Panel:new(State)
+    end,
+    --
+    --
     keypressed = function(key)
         if key == "o" then
             State.camera:toggle_grid()
@@ -27,13 +38,13 @@ State:implements({
     --
     --
     update = function(dt)
-
+        panel:update(dt)
     end,
     --
     --
     draw = function(camera)
-
+        panel:draw()
     end
-})
+}
 
 return State

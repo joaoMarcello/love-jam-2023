@@ -3,7 +3,8 @@ Pack = require "jm-love2d-package.init"
 
 math.randomseed(os.time())
 love.graphics.setBackgroundColor(0, 0, 0, 1)
-love.mouse.setVisible(false)
+love.graphics.setDefaultFilter("nearest", "nearest")
+-- love.mouse.setVisible(false)
 
 collectgarbage("setstepmul", 300)
 collectgarbage("setpause", 200)
@@ -19,7 +20,7 @@ collectgarbage("setpause", 200)
 
 --==================================================================
 
-SCREEN_HEIGHT = Pack.Utils:round(32 * 12)
+SCREEN_HEIGHT = Pack.Utils:round(32 * 14)
 SCREEN_WIDTH = Pack.Utils:round(SCREEN_HEIGHT * 1.5)
 
 --==================================================================
