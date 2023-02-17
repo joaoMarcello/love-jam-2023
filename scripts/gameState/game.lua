@@ -23,8 +23,18 @@ local panel
 State:implements {
     --
     --
+    load = function()
+        Panel:load()
+    end,
+    --
+    --
     init = function()
         panel = Panel:new(State)
+    end,
+    --
+    --
+    finish = function()
+        Panel:finish()
     end,
     --
     --
