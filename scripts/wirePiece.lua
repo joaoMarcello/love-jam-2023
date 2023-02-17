@@ -40,7 +40,7 @@ function Piece:new(state, args)
     args.y = args.y or (32 * 3)
     args.w = 32
     args.h = 32
-    args.type = args.type or Types["top-middle"]
+    args.type = args.type and Types[args.type] or Types["top-middle"]
 
     local obj = Component:new(state, args)
     setmetatable(obj, self)

@@ -29,6 +29,10 @@ function Panel:__constructor__(state, args)
     self.ox = self.w / 2
     self.oy = self.h / 2
 
+    self.matrix = {}
+    self.max_column = (4 * 3) - 2
+    self.max_row = (3 * 2)
+
     self.wires = {}
     self.wires[1] = Wire:new(state, self, {
         x = self.x,
