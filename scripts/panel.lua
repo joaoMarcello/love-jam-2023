@@ -23,6 +23,9 @@ end
 ---@param state GameState.Game|GameState
 function Panel:__constructor__(state, args)
     self.gamestate = state
+
+    self.ox = self.w / 2
+    self.oy = self.h / 2
 end
 
 --==========================================================================
@@ -42,15 +45,19 @@ end
 --==========================================================================
 
 function Panel:update(dt)
-
+    Component.update(self, dt)
 end
 
-function Panel:draw()
+function Panel:my_draw()
     love.graphics.setColor(0, 0, 1, 0.2)
     love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
 
     love.graphics.setColor(0, 0, 0, 1)
     love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
+end
+
+function Panel:draw()
+    Component.draw(self, self.my_draw)
 end
 
 return Panel

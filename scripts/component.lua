@@ -1,12 +1,14 @@
----@class GameComponent
-local GC = {}
+local Affectable = _G.JM_Affectable
+
+---@class GameComponent: JM.Template.Affectable
+local GC = setmetatable({}, Affectable)
 GC.__index = GC
 
 ---@param game GameState
 ---@return table
 function GC:new(game, args)
     args = args or {}
-    local obj = setmetatable({}, GC)
+    local obj = setmetatable(Affectable:new(), GC)
     GC.__constructor__(obj, game, args)
     return obj
 end
@@ -54,11 +56,14 @@ function GC:finish()
 end
 
 function GC:update(dt)
-    return false
+    Affectable.update(self, dt)
 end
 
-function GC:draw()
-    return false
+---@param custom_draw function|nil
+function GC:draw(custom_draw)
+    if custom_draw then
+        Affectable.draw(self, custom_draw)
+    end
 end
 
 return GC
