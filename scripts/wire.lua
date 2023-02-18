@@ -331,7 +331,7 @@ function Wire:get_track_pieces(socket)
 
                 local piece = Piece:new(self.gamestate, self, {
                     x = self.panel.x + (32 * (j - 1)),
-                    y = self.panel.y + (32 * 6) + (32 * (i - 1)),
+                    y = self.panel.y + (32 * 7) + (32 * (i - 1)),
                     type = type_
                 })
 
@@ -348,7 +348,7 @@ function Wire:get_track_pieces(socket)
 
             local piece = Piece:new(self.gamestate, self, {
                 x = px,
-                y = self.panel.y + (32 * 6) + (32 * (i - 1)),
+                y = self.panel.y + (32 * 7) + (32 * (i - 1)),
                 type = prev.id:match("left") and "left" or "right"
             })
 

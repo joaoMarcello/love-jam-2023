@@ -107,6 +107,22 @@ do
 end
 --==========================================================================
 
+function Panel:shake()
+    if not self.is_shaking then
+        self.is_shaking = true
+
+        local eff = self:apply_effect("earthquake", {
+            duration = 0.5,
+            random = true,
+            range_x = 3,
+            range_y = 3
+        })
+        eff:set_final_action(function()
+            self.is_shaking = false
+        end)
+    end
+end
+
 local function socket_to_relative(n)
     return ((n - 1) * 3) + 1
 end
@@ -190,17 +206,38 @@ function Panel:selected_wire()
     return self.wires_by_last[self.selected_id]
 end
 
+function Panel:is_complete()
+    for i = 1, self.n_wires do
+        ---@type Game.Component.Wire
+        local wire = self.wires[i]
+        if not wire:is_plugged() then return false end
+    end
+    return true
+end
+
 --=========================================================================
 function Panel:mouse_pressed(x, y, button)
+    if self.is_shaking then return end
+
+    if button == 2 then
+        local wire = self:selected_wire()
+        if wire and not wire:is_plugged() then
+            wire.state = Wire.States.inactive
+        end
+        self.selected_id = nil
+        return
+    end
+
     if self.selected_id and self.cur_socket then
         local wire = self:selected_wire()
         if wire then
             local success = wire:plug(self.cur_socket)
-            if success then
-                self.selected_id = nil
-                self.cur_socket = nil
-                return
+            if not success then
+                wire.state = Wire.States.inactive
+                self:shake()
             end
+            self.selected_id = nil
+            self.cur_socket = nil
         end
         return
     end
@@ -216,15 +253,6 @@ function Panel:mouse_pressed(x, y, button)
 
         wire = self:selected_wire()
         if wire and wire:is_plugged() then self.selected_id = nil end
-    else
-        -- if self.selected_id then
-        --     ---@type Game.Component.Wire
-        --     local wire = self.wires_by_last[self.selected_id]
-        --     if not wire:is_plugged() then
-        --         wire.state = Wire.States.inactive
-        --     end
-        -- end
-        -- self.selected_id = nil
     end
 end
 
@@ -238,6 +266,10 @@ function Panel:update(dt)
     then
         self.cur_socket = math.floor((mx - self.x) / (self.w / 4)) + 1
         self.cur_socket = Utils:clamp(self.cur_socket, 1, 4)
+
+        ---@type Game.Component.Wire
+        local wire = self.wires_by_id[self.cur_socket]
+        if wire and wire:is_plugged() then self.cur_socket = nil end
     else
         self.cur_socket = nil
     end
@@ -282,6 +314,9 @@ function Panel:my_draw()
         local wire = self.wires[i]
         wire:draw()
     end
+
+    local Font = _G.JM_Font
+    Font:print(self:is_complete() and "<color, 1, 1, 1>Complete" or "<color, 1, 1, 1>NOT", self.x + self.w, self.y)
 end
 
 function Panel:draw()
