@@ -446,9 +446,9 @@ function Wire:draw()
         end
     end
 
-    Pack.Font:print("" .. self.pos[1] .. "-" .. self.pos[2] .. "-" .. self.pos[3], self.x, self.y - 20)
+    -- Pack.Font:print("" .. self.pos[1] .. "-" .. self.pos[2] .. "-" .. self.pos[3], self.x, self.y - 20)
 
-    Pack.Font:print(self.pos_init, self.x, self.y - 40)
+    -- Pack.Font:print(self.pos_init, self.x, self.y - 40)
 end
 
 return Wire

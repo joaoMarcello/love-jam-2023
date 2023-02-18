@@ -39,7 +39,7 @@ function Panel:new(state, args)
     args.x = args.x or 0
     args.y = args.y or 64
     args.w = (32 * 3 * 4) - (32 * 2)
-    args.h = (32 * 2 * 3) + (32 * 5)
+    args.h = (32 * 2 * 3) + (32 * 6)
 
     local obj = Component:new(state, args)
     setmetatable(obj, self)
