@@ -29,7 +29,7 @@ State:implements {
     --
     --
     init = function()
-        panel = Panel:new(State)
+        panel = Panel:new(State, { x = 32 * 4 })
     end,
     --
     --

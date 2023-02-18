@@ -1,3 +1,4 @@
+local Utils = _G.JM_Utils
 local Component = require "scripts.component"
 local Wire = require "scripts.wire"
 
@@ -38,21 +39,40 @@ function Panel:__constructor__(state, args)
     end
     self.occupied[1][7] = true
     self.occupied[1][10] = true
+    -- self.occupied[4][1] = true
+    -- self.occupied[4][5] = true
+    -- self.occupied[4][7] = true
 
     self.sockets = {}
 
     self.wires = {}
 
-    for i = 1, 4, 1 do
+    self.wires_by_id = {}
+
+    for i = 1, 3, 2 do
         local wire = Wire:new(state, self, { id = i })
         table.insert(self.wires, wire)
+        self.wires_by_id[i] = wire
+        -- break
+    end
+
+    for i = 2, 4, 2 do
+        local wire = Wire:new(state, self, { id = i })
+        table.insert(self.wires, wire)
+        self.wires_by_id[i] = wire
+        -- break
     end
 
     table.sort(self.wires, function(a, b)
         return a.draw_order < b.draw_order
     end)
 
+    self.wires_by_id[1].state = Wire.States.tracking
+
     self.n_wires = #self.wires
+
+    self.sockets = {}
+    self.cur_socket = nil
 end
 
 --==========================================================================
@@ -71,49 +91,39 @@ do
 end
 --==========================================================================
 
-function Panel:get_socket()
-    local s = 1
-    for i = 2, 4 do
-        if math.random() > 0.5 then
-            s = i
-        end
-    end
+local function socket_to_relative(n)
+    return ((n - 1) * 3) + 1
+end
+
+function Panel:socket_to_relative(n)
+    return socket_to_relative(n)
+end
+
+---@param wire Game.Component.Wire
+function Panel:get_socket(wire)
+    local min = 1
+    local max = 4
+
+    local s = math.random(min, max)
 
     if not self.sockets[s] then
         self.sockets[s] = true
-        -- return s
     else
         for i = 1, 4 do
             if not self.sockets[i] then
                 self.sockets[i] = true
                 s = i
                 break
-                -- return i
             end
         end
     end
 
-    return ((s - 1) * 3) + 1
+    return socket_to_relative(s)
 end
 
 ---@param wire Game.Component.Wire
 function Panel:get_path(row, wire, last)
-    local column = 1
-
-    local max_column = self.max_column
-
-    if wire.id == 1 then
-        max_column = 6
-    elseif wire.id == 2 then
-        max_column = 7
-    end
-
-    for i = 1, max_column do
-        if math.random() > 0.5 then
-            column = i
-        end
-    end
-
+    -- internal function
     local lock_x = function(a, b)
         local min = a < b and a or b
         local max = min == a and b or a
@@ -122,6 +132,19 @@ function Panel:get_path(row, wire, last)
             self.occupied[row][j] = true
         end
     end
+
+    local column = 1
+
+    local min_column = 1
+    local max_column = self.max_column
+
+    if wire.id == 1 then
+        max_column = 6
+    elseif wire.id == 2 then
+        max_column = 7
+    end
+
+    column = math.random(min_column, max_column)
 
     if not self.occupied[row][column] then
         lock_x(last, column)
@@ -139,16 +162,22 @@ function Panel:get_path(row, wire, last)
         end
 
         lock_x(last, column)
-        -- for j = 1, column do
-        --     self.occupied[row][j] = true
-        -- end
     end
 
     return column
 end
 
+--=========================================================================
+
 function Panel:update(dt)
     Component.update(self, dt)
+
+    local mx, my = self.gamestate:get_mouse_position()
+
+    if mx <= self.x + self.w and mx >= self.x then
+        self.cur_socket = math.floor((mx - self.x) / (self.w / 4)) + 1
+        self.cur_socket = Utils:clamp(self.cur_socket, 1, 4)
+    end
 
     for i = 1, self.n_wires do
         ---@type Game.Component.Wire
@@ -163,6 +192,13 @@ function Panel:my_draw()
 
     love.graphics.setColor(0, 0, 0, 1)
     love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
+    love.graphics.rectangle("fill", self.x, self.y + 32 * 6, self.w, 2)
+
+    if self.cur_socket then
+        local s = socket_to_relative(self.cur_socket) - 1
+        love.graphics.setColor(0, 0, 1, 0.7)
+        love.graphics.rectangle("fill", self.x + s * 32, self.y + self.h, 32, 32)
+    end
 
     for i = 1, self.n_wires do
         ---@type Game.Component.Wire
