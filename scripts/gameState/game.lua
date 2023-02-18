@@ -8,7 +8,7 @@ local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT,
     {
         top = 0,
         left = 0,
-        right = 32 * 800,
+        right = math.huge - 1,
         bottom = SCREEN_HEIGHT
     })
 
@@ -74,7 +74,7 @@ State:implements {
 
         panel:update(dt)
 
-        if panel:is_complete() then
+        if panel:is_complete() and panel.complete_time >= 0.8 then
             prev_panel = panel
 
             panel = Panel:new(State, {

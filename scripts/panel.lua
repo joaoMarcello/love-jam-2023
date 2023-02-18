@@ -39,7 +39,7 @@ function Panel:new(state, args)
     args.x = args.x or 0
     args.y = args.y or 64
     args.w = (32 * 3 * 4) - (32 * 2)
-    args.h = (32 * 2 * 3) + (32 * 4)
+    args.h = (32 * 2 * 3) + (32 * 5)
 
     local obj = Component:new(state, args)
     setmetatable(obj, self)
@@ -106,6 +106,8 @@ function Panel:__constructor__(state, args)
     self.sockets = {}
     self.cur_socket = nil
     self.selected_id = nil
+
+    self.complete_time = 0.0
 end
 
 --==========================================================================
@@ -313,6 +315,10 @@ end
 
 function Panel:update(dt)
     Component.update(self, dt)
+
+    if self:is_complete() then
+        self.complete_time = self.complete_time + dt
+    end
 
     local mx, my = self.gamestate:get_mouse_position()
 
