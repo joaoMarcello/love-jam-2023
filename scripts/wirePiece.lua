@@ -34,7 +34,7 @@ Piece.Types = Types
 
 ---@param state GameState
 ---@return Game.Component.Piece
-function Piece:new(state, args)
+function Piece:new(state, wire, args)
     args = args or {}
     args.x = args.x or (32 * 2)
     args.y = args.y or (32 * 3)
@@ -45,13 +45,15 @@ function Piece:new(state, args)
 
     local obj = Component:new(state, args)
     setmetatable(obj, self)
-    Piece.__constructor__(obj, state, args)
+    Piece.__constructor__(obj, state, wire, args)
     return obj
 end
 
 ---@param state GameState.Game|GameState
-function Piece:__constructor__(state, args)
+---@param wire Game.Component.Wire
+function Piece:__constructor__(state, wire, args)
     self.gamestate = state
+    self.wire = wire
 
     self.ox = self.w / 2
     self.oy = self.h / 2
@@ -67,7 +69,7 @@ function Piece:__constructor__(state, args)
         }
     }
 
-    self.anima:set_color2(1, 1, 1, 1)
+    self.anima:set_color2(unpack(wire.color__))
 end
 
 function Piece:load()
@@ -89,7 +91,7 @@ function Piece:draw()
         self:draw_shadow()
     end
 
-    self.anima:set_color2(1, 1, 1, 1)
+    self.anima:set_color2(unpack(self.wire.color__))
     self.anima:draw_rec(self.x, self.y, self.w, self.h)
 end
 

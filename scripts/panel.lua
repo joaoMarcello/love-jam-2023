@@ -2,9 +2,18 @@ local Utils = _G.JM_Utils
 local Component = require "scripts.component"
 local Wire = require "scripts.wire"
 
+---@enum Game.Component.Panel.Colors
+local Colors = {
+    Wire.Colors.red,
+    Wire.Colors.green,
+    Wire.Colors.blue,
+    Wire.Colors.yellow
+}
+
 ---@class Game.Component.Panel : GameComponent
 local Panel = setmetatable({}, Component)
 Panel.__index = Panel
+Panel.Colors = Colors
 
 ---@param state GameState
 ---@return Game.Component.Panel
@@ -46,13 +55,14 @@ function Panel:__constructor__(state, args)
     self.sockets = {}
 
     self.wires = {}
-
     self.wires_by_id = {}
+    self.wires_by_last = {}
 
     for i = 1, 3, 2 do
         local wire = Wire:new(state, self, { id = i })
         table.insert(self.wires, wire)
         self.wires_by_id[i] = wire
+        self.wires_by_last[wire.socket_id] = wire
         -- break
     end
 
@@ -60,6 +70,7 @@ function Panel:__constructor__(state, args)
         local wire = Wire:new(state, self, { id = i })
         table.insert(self.wires, wire)
         self.wires_by_id[i] = wire
+        self.wires_by_last[wire.socket_id] = wire
         -- break
     end
 
@@ -67,12 +78,17 @@ function Panel:__constructor__(state, args)
         return a.draw_order < b.draw_order
     end)
 
-    self.wires_by_id[1].state = Wire.States.tracking
+    for i = 1, 4 do
+        ---@type Game.Component.Wire
+        local wire = self.wires_by_id[i]
+        local r = wire and wire:set_hidden_color(Colors[i])
+    end
 
     self.n_wires = #self.wires
 
     self.sockets = {}
     self.cur_socket = nil
+    self.selected_id = nil
 end
 
 --==========================================================================
@@ -118,7 +134,7 @@ function Panel:get_socket(wire)
         end
     end
 
-    return socket_to_relative(s)
+    return socket_to_relative(s), s
 end
 
 ---@param wire Game.Component.Wire
@@ -167,16 +183,71 @@ function Panel:get_path(row, wire, last)
     return column
 end
 
+---@return Game.Component.Wire|nil
+function Panel:selected_wire()
+    if not self.selected_id then return nil end
+
+    return self.wires_by_last[self.selected_id]
+end
+
 --=========================================================================
+function Panel:mouse_pressed(x, y, button)
+    if self.selected_id and self.cur_socket then
+        local wire = self:selected_wire()
+        if wire then
+            local success = wire:plug(self.cur_socket)
+            if success then
+                self.selected_id = nil
+                self.cur_socket = nil
+                return
+            end
+        end
+        return
+    end
+
+    if x <= self.x + self.w and x >= self.x then
+        local wire = self:selected_wire()
+        if wire and not wire:is_plugged() then
+            wire.state = Wire.States.inactive
+        end
+
+        self.selected_id = math.floor((x - self.x) / (self.w / 4)) + 1
+        self.selected_id = Utils:clamp(self.selected_id, 1, 4)
+
+        wire = self:selected_wire()
+        if wire and wire:is_plugged() then self.selected_id = nil end
+    else
+        -- if self.selected_id then
+        --     ---@type Game.Component.Wire
+        --     local wire = self.wires_by_last[self.selected_id]
+        --     if not wire:is_plugged() then
+        --         wire.state = Wire.States.inactive
+        --     end
+        -- end
+        -- self.selected_id = nil
+    end
+end
 
 function Panel:update(dt)
     Component.update(self, dt)
 
     local mx, my = self.gamestate:get_mouse_position()
 
-    if mx <= self.x + self.w and mx >= self.x then
+    if mx <= self.x + self.w and mx >= self.x
+        and my >= (self.y + self.h - 32 * 1.5)
+    then
         self.cur_socket = math.floor((mx - self.x) / (self.w / 4)) + 1
         self.cur_socket = Utils:clamp(self.cur_socket, 1, 4)
+    else
+        self.cur_socket = nil
+    end
+
+    if self.selected_id and self.cur_socket then
+        local wire = self:selected_wire()
+
+        if wire and not wire:is_plugged() then
+            wire.state = Wire.States.tracking
+        end
     end
 
     for i = 1, self.n_wires do
@@ -198,6 +269,12 @@ function Panel:my_draw()
         local s = socket_to_relative(self.cur_socket) - 1
         love.graphics.setColor(0, 0, 1, 0.7)
         love.graphics.rectangle("fill", self.x + s * 32, self.y + self.h, 32, 32)
+    end
+
+    if self.selected_id then
+        local s = socket_to_relative(self.selected_id) - 1
+        love.graphics.setColor(1, 1, 0, 0.7)
+        love.graphics.rectangle("fill", self.x + s * 32, self.y + 32 * 6, 32, 32)
     end
 
     for i = 1, self.n_wires do

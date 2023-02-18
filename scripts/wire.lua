@@ -8,12 +8,22 @@ local States = {
     plugged = 3
 }
 
+---@enum Game.Component.Wire.Colors
+local Colors = {
+    red = { 1, 0, 0, 1 },
+    green = { 0, 1, 0, 1 },
+    blue = { 0, 0, 1, 1 },
+    yellow = { 1, 1, 0, 1 },
+    white = { 1, 1, 1, 1 }
+}
+
 local img
 
 ---@class Game.Component.Wire: GameComponent
 local Wire = setmetatable({}, Component)
 Wire.__index = Wire
 Wire.States = States
+Wire.Colors = Colors
 
 ---@param state GameState
 ---@param panel Game.Component.Panel
@@ -36,6 +46,8 @@ function Wire:__constructor__(state, panel, args)
     self.gamestate = state
     self.panel = panel
 
+    self.color__ = Colors.white
+
     self.id = args.id
     self.pos_init = ((self.id - 1) * 3) + 1
     self.x = self.panel.x + 32 * (self.pos_init - 1)
@@ -46,17 +58,17 @@ function Wire:__constructor__(state, panel, args)
     self.pieces = {}
 
     self.pos = {}
+    self.socket, self.socket_id = panel:get_socket(self)
+
     if self:is_even() then
         self.pos[1] = panel:get_path(2, self, self.pos_init)
         self.pos[2] = panel:get_path(4, self, self.pos[1])
-        self.pos[3] = panel:get_socket(self)
+        self.pos[3] = self.socket
     else
         self.pos[1] = panel:get_path(1, self, self.pos_init)
         self.pos[2] = panel:get_path(3, self, self.pos[1])
-        self.pos[3] = panel:get_socket(self)
+        self.pos[3] = self.socket
     end
-
-    self.socket = self.pos[3]
 
     -- self.path = {
     --     { 1, 5 },
@@ -206,7 +218,7 @@ function Wire:__constructor__(state, panel, args)
 
             last = type_
 
-            local piece = Piece:new(state, {
+            local piece = Piece:new(state, self, {
                 x = self.panel.x + (32 * (k - 1)),
                 y = self.panel.y + (32 * (i - 1)),
                 type = type_
@@ -220,6 +232,8 @@ function Wire:__constructor__(state, panel, args)
     self.n_pieces = #self.pieces
 
     self.pieces_track = nil
+
+    -- self:plug(self.id)
 end
 
 --=======================================================================
@@ -277,10 +291,11 @@ function Wire:get_track_pieces(socket)
     local last_piece = self.pieces[self.n_pieces]
 
     local prev = last_piece
-    local next
+
+    local curve_id = self.socket_id
 
     for i = 1, 4 do
-        if i == self.id then
+        if i == curve_id then
             local node = get_node { self.socket, socket_position }
 
             for j = node.left, node.right do
@@ -300,6 +315,7 @@ function Wire:get_track_pieces(socket)
                     type_ = "top-right"
                 end
 
+
                 if j == node.left and j == self.socket then
                     if self.socket < socket_position then
                         type_ = "bottom-left"
@@ -313,7 +329,7 @@ function Wire:get_track_pieces(socket)
                     type_ = "top-left"
                 end
 
-                local piece = Piece:new(self.gamestate, {
+                local piece = Piece:new(self.gamestate, self, {
                     x = self.panel.x + (32 * (j - 1)),
                     y = self.panel.y + (32 * 6) + (32 * (i - 1)),
                     type = type_
@@ -324,11 +340,13 @@ function Wire:get_track_pieces(socket)
             end
         else
             local px = self.panel.x + (32 * (socket_position - 1))
-            if i <= self.id then
+
+            if i <= curve_id then
                 local s = self.socket - 1
                 px = self.panel.x + 32 * s
             end
-            local piece = Piece:new(self.gamestate, {
+
+            local piece = Piece:new(self.gamestate, self, {
                 x = px,
                 y = self.panel.y + (32 * 6) + (32 * (i - 1)),
                 type = prev.id:match("left") and "left" or "right"
@@ -346,12 +364,33 @@ function Wire:get_track_pieces(socket)
     return pieces
 end
 
+function Wire:set_hidden_color(color)
+    self.color_hidden = color
+end
+
 function Wire:is_even()
     return self.id % 2 == 0
 end
 
 function Wire:is_odd()
     return self.id % 2 ~= 0
+end
+
+function Wire:is_plugged()
+    return self.state == States.plugged
+end
+
+function Wire:plug(socket)
+    if self.state ~= States.plugged then
+        if socket ~= self.id then
+            return false
+        end
+
+        self.state = States.plugged
+        self.pieces_track = self:get_track_pieces(self.id)
+        self.color__ = self.color_hidden or Colors.white
+        return true
+    end
 end
 
 ---@param self Game.Component.Wire
@@ -381,11 +420,13 @@ function Wire:draw()
         piece:draw()
     end
 
-    if self.pieces_track then
-        for i = 1, #(self.pieces_track) do
-            ---@type Game.Component.Piece
-            local piece = self.pieces_track[i]
-            piece:draw()
+    if self.state ~= States.inactive then
+        if self.pieces_track then
+            for i = 1, #(self.pieces_track) do
+                ---@type Game.Component.Piece
+                local piece = self.pieces_track[i]
+                piece:draw()
+            end
         end
     end
 

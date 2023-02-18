@@ -51,6 +51,11 @@ State:implements {
     end,
     --
     --
+    mousepressed = function(x, y, button)
+        panel:mouse_pressed(x, y, button)
+    end,
+    --
+    --
     update = function(dt)
         panel:update(dt)
     end,
