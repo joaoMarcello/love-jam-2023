@@ -20,7 +20,7 @@ collectgarbage("setpause", 200)
 
 --==================================================================
 
-SCREEN_HEIGHT = Pack.Utils:round(32 * 14)
+SCREEN_HEIGHT = Pack.Utils:round(32 * 15)
 SCREEN_WIDTH = Pack.Utils:round(SCREEN_HEIGHT * 1.5)
 
 --==================================================================

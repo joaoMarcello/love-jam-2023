@@ -10,6 +10,23 @@ local Colors = {
     Wire.Colors.yellow
 }
 
+---@enum Game.Component.Panel.Events
+local Events = {
+    complete = 1,
+    plug = 2,
+    shock = 3,
+    select = 4,
+    unselect = 5
+}
+---@alias Game.Component.Panel.EventNames "complete"|"plug"|"shock"|"select"|"unselect"
+
+---@param self Game.Component.Panel
+---@param type_ Game.Component.Panel.Events
+local function dispatch_event(self, type_)
+    local evt = self.events and self.events[type_]
+    local r = evt and evt.action(evt.args)
+end
+
 ---@class Game.Component.Panel : GameComponent
 local Panel = setmetatable({}, Component)
 Panel.__index = Panel
@@ -106,6 +123,32 @@ do
     end
 end
 --==========================================================================
+
+---@param name Game.Component.Panel.EventNames
+---@param action function
+---@param args any
+function Panel:on_event(name, action, args)
+    local evt_type = Events[name]
+    if not evt_type then return end
+
+    self.events = self.events or {}
+
+    self.events[evt_type] = {
+        type = evt_type,
+        action = action,
+        args = args
+    }
+end
+
+---@param name Game.Component.Panel.EventNames
+---@return table|nil
+function Panel:get_event(name)
+    local evt_type = Events[name]
+    if not evt_type then return end
+
+    local evt = self.events and self.events[evt_type]
+    return evt
+end
 
 function Panel:shake()
     if not self.is_shaking then
@@ -221,8 +264,9 @@ function Panel:mouse_pressed(x, y, button)
 
     if button == 2 then
         local wire = self:selected_wire()
-        if wire and not wire:is_plugged() then
-            wire.state = Wire.States.inactive
+
+        if wire then
+            wire:turn_inactive()
         end
         self.selected_id = nil
         return
@@ -230,22 +274,33 @@ function Panel:mouse_pressed(x, y, button)
 
     if self.selected_id and self.cur_socket then
         local wire = self:selected_wire()
+
         if wire then
             local success = wire:plug(self.cur_socket)
+
             if not success then
                 wire.state = Wire.States.inactive
                 self:shake()
+                dispatch_event(self, Events.shock)
+                --
+            elseif self:is_complete() then
+                dispatch_event(self, Events.complete)
+                --
+            else
+                dispatch_event(self, Events.plug)
             end
+
             self.selected_id = nil
             self.cur_socket = nil
         end
         return
     end
 
-    if x <= self.x + self.w and x >= self.x then
+    if x <= (self.x + self.w) and x >= self.x then
         local wire = self:selected_wire()
-        if wire and not wire:is_plugged() then
-            wire.state = Wire.States.inactive
+
+        if wire then
+            wire:turn_inactive()
         end
 
         self.selected_id = math.floor((x - self.x) / (self.w / 4)) + 1
@@ -277,8 +332,8 @@ function Panel:update(dt)
     if self.selected_id and self.cur_socket then
         local wire = self:selected_wire()
 
-        if wire and not wire:is_plugged() then
-            wire.state = Wire.States.tracking
+        if wire then
+            wire:turn_tracking()
         end
     end
 

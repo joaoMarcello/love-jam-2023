@@ -380,6 +380,22 @@ function Wire:is_plugged()
     return self.state == States.plugged
 end
 
+function Wire:turn_inactive()
+    if not self:is_plugged() and self.state ~= States.inactive then
+        self.state = States.inactive
+        return true
+    end
+    return false
+end
+
+function Wire:turn_tracking()
+    if not self:is_plugged() and self.state ~= States.tracking then
+        self.state = States.tracking
+        return true
+    end
+    return false
+end
+
 function Wire:plug(socket)
     if self.state ~= States.plugged then
         if socket ~= self.id then
