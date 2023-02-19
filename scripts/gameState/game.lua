@@ -179,12 +179,12 @@ State:implements {
         camera:follow(panel.x, panel.y, 'panel')
         camera:update(dt)
 
-        local score = param['score']
-        if score > param['hi_score'] then
-            display_score:ghost()
-        else
-            display_score:remove_eff_ghost()
-        end
+        -- local score = param['score']
+        -- if score > param['hi_score'] then
+        --     display_score:ghost()
+        -- else
+        --     display_score:remove_eff_ghost()
+        -- end
 
         -- GAME OVER
         if timer:time_is_up() then
