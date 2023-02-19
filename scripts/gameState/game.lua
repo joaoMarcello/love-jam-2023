@@ -49,6 +49,9 @@ local display_score
 ---@type Game.Component.DisplayValue
 local display_hi_score
 
+---@type Game.Component.DisplayValue
+local display_shocks
+
 ---@type JM.Font.Font
 local gui_font
 
@@ -109,6 +112,9 @@ State:implements {
             character_space = 2
         }
 
+        param = {}
+        param['hi_score'] = 2000
+
         Panel:load()
         Timer:load()
         DisplayLvl:load()
@@ -117,15 +123,9 @@ State:implements {
     --
     --
     init = function()
-        param = {
-            level = 1,
-            shocks = 0,
-            score = 0,
-            max_score = 1000
-        }
-
-        State:game_set_param("hi_score", 2000)
+        State:game_set_param("score", 0)
         State:game_set_param("shocks", 0)
+        State:game_set_param("level", 0)
 
         panel = Panel:new(State, { x = 32 * 3 })
         timer = Timer:new(State)
@@ -137,6 +137,13 @@ State:implements {
             track = "hi_score",
             display = "HI SCORE",
             y = 32 * 8
+        })
+
+        display_shocks = DisplayValue:new(State, {
+            track = "shocks",
+            display = "SHOCKS",
+            y = 32 * 10,
+            format = "%d"
         })
     end,
     --
@@ -172,10 +179,25 @@ State:implements {
         camera:follow(panel.x, panel.y, 'panel')
         camera:update(dt)
 
+        local score = param['score']
+        if score > param['hi_score'] then
+            display_score:ghost()
+        else
+            display_score:remove_eff_ghost()
+        end
+
+        -- GAME OVER
+        if timer:time_is_up() then
+            panel:lock()
+            State:game_set_param("level", display_level:get_value())
+        end
+
         panel:update(dt)
+
         display_level:update(dt)
         display_score:update(dt)
         display_hi_score:update(dt)
+        display_shocks:update(dt)
 
         if panel:is_complete() and panel.complete_time >= 2.0 then
             prev_panel = panel
@@ -196,11 +218,6 @@ State:implements {
 
         if not panel:is_locked() and not panel:is_complete() then
             timer:update(dt)
-        end
-
-        local score = param['score']
-        if score > param['hi_score'] then
-            param['hi_score'] = score
         end
     end,
     --
@@ -239,6 +256,7 @@ State:implements {
                 timer:draw()
                 display_score:draw()
                 display_hi_score:draw()
+                display_shocks:draw()
             end
         }
     }

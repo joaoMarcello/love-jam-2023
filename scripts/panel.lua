@@ -159,7 +159,9 @@ function Panel:is_locked()
 end
 
 function Panel:lock()
-    if not self.__lock then self.__lock = true end
+    if not self.__lock then
+        self.__lock = true
+    end
 end
 
 function Panel:unlock()
@@ -301,6 +303,7 @@ function Panel:mouse_pressed(x, y, button)
 
                 timer:decrement(5)
                 self.gamestate:game_decrement_param("score", 100)
+                self.gamestate:game_increment_param("shocks", 1)
 
                 dispatch_event(self, Events.shock)
                 --
@@ -335,9 +338,8 @@ function Panel:mouse_pressed(x, y, button)
 end
 
 function Panel:update(dt)
-    if self.__lock then return end
-
     Component.update(self, dt)
+    if self.__lock then return end
 
     if self:is_complete() then
         self.complete_time = self.complete_time + dt

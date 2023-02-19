@@ -115,7 +115,7 @@ function Timer:my_draw()
     font:set_color(_G.JM_Utils:get_rgba(1, 1, 0, 1))
     -- font:set_font_size(28)
     local sm = string_format("%02d:%02d:%02d", min, sec, dec)
-    font:print(sm, self.x, self.y + 32)
+    font:print(sm, self.x + 16, self.y + 32)
     font:pop()
 end
 

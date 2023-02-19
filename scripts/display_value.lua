@@ -14,6 +14,7 @@ function Display:new(state, args)
     args.display = args.display or "SCORE"
     args.x = 32 * 16
     args.y = args.y or (32 * 6)
+    args.format = args.format or "%07d"
 
     local obj = Affectable:new()
     setmetatable(obj, self)
@@ -28,8 +29,11 @@ function Display:__constructor__(state, args)
     self.y = args.y
     self.display = args.display
     self.track = args.track
+    self.format = args.format
 
     self.value = self.gamestate:game_get_param(self.track)
+
+    self.eff_actives = {}
 
     font = font or state:game_get_gui_font()
 end
@@ -64,6 +68,23 @@ function Display:flick()
     end)
 end
 
+function Display:ghost()
+    local ghost = self.eff_actives["ghost"]
+    if not ghost or ghost.__remove then
+        local eff = self:apply_effect("ghost", { speed = 0.5, min = 0.3, max = 1 })
+        eff:set_final_action(function()
+            self.color[4] = 1
+        end)
+    end
+end
+
+function Display:remove_eff_ghost()
+    local eff = self.eff_actives["ghost"]
+    if eff then
+        eff.__remove = true
+    end
+end
+
 function Display:update(dt)
     Affectable.update(self, dt)
 
@@ -71,14 +92,14 @@ function Display:update(dt)
 end
 
 function Display:my_draw()
-    font:print("<color, 1, 1, 0>" .. string.format("%07d", self.value), self.x, self.y + 32)
+    font:print("<color, 1, 1, 0>" .. string.format(self.format, self.value), self.x + 16, self.y + 32)
 end
 
 function Display:draw()
     Affectable.draw(self, self.my_draw)
 
     font:push()
-    font:set_color(_G.JM_Utils:get_rgba(1, 1, 1, 1))
+    font:set_color(self.color)
     font:set_font_size(font.__font_size - 6)
     font:print(self.display,
         self.x,
