@@ -297,6 +297,9 @@ function Panel:mouse_pressed(x, y, button)
             if not success then
                 wire.state = Wire.States.inactive
                 self:shake()
+                local timer = self.gamestate:game_get_timer()
+                timer:decrement(5)
+
                 dispatch_event(self, Events.shock)
                 --
             elseif self:is_complete() then

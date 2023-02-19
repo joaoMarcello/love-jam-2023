@@ -1,5 +1,6 @@
 local love = _G.love
 local Pack = _G.JM_Love2D_Package
+local Generator = Pack.FontGenerator
 
 local Panel = require "scripts.panel"
 local Timer = require "scripts.timer"
@@ -12,6 +13,8 @@ local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT,
         right = math.huge - 1,
         bottom = SCREEN_HEIGHT
     })
+
+State:set_color(0.2, 0.2, 0.2, 1)
 
 State.camera:toggle_debug()
 State.camera:toggle_grid()
@@ -34,7 +37,22 @@ local prev_panel
 ---@type Game.Component.Timer
 local timer
 
+---@type JM.Font.Font
+local gui_font
+
 local param
+
+function State:game_get_timer()
+    return timer
+end
+
+function State:game_get_panel()
+    return panel
+end
+
+function State:game_get_gui_font()
+    return gui_font
+end
 
 ---@alias GameState.Game.Params "level"|"shocks"|"score"|"max_score"
 
@@ -65,6 +83,14 @@ State:implements {
     --
     --
     load = function()
+        gui_font = Generator:new_by_ttf {
+            path = "/data/font/Retro Gaming.ttf",
+            dpi = 32,
+            name = "retro gaming",
+            font_size = 18,
+            character_space = 2
+        }
+
         Panel:load()
         Timer:load()
     end,
@@ -79,7 +105,7 @@ State:implements {
         }
 
         panel = Panel:new(State, { x = 32 * 3 })
-        timer = Timer:new()
+        timer = Timer:new(State)
     end,
     --
     --
@@ -112,7 +138,6 @@ State:implements {
         camera:follow(panel.x, panel.y, 'panel')
         camera:update(dt)
 
-        timer:update(dt)
         panel:update(dt)
 
         if panel:is_complete() and panel.complete_time >= 2.0 then
@@ -129,33 +154,46 @@ State:implements {
         if panel:is_locked() and camera:target_on_focus_x() then
             panel:unlock()
         end
+
+        if not panel:is_locked() and not panel:is_complete() then
+            timer:update(dt)
+        end
     end,
     --
     --
     layers = {
         {
+            name = "MAIN",
+
+            draw = function(self, cm)
+                if prev_panel then
+                    prev_panel:draw()
+                end
+
+                panel:draw()
+            end
+        },
+        --
+        --
+        {
+            name = "GUI",
             factor_x = -1,
 
             draw = function(self, camera)
                 local Font = _G.JM_Font
-                Font:print("Pos: " .. panel.x, 600, 32)
-                Font:print("Pos: " .. State.camera.bounds_right, 600, 50)
+                -- Font:print("Pos: " .. panel.x, 600, 32)
+                -- Font:print("Pos: " .. State.camera.bounds_right, 600, 50)
+
+                local l, t, r, b = State.camera:get_viewport_in_world_coord()
+                l, t = State.camera:world_to_screen(l, t)
+                r, b = State.camera:world_to_screen(r, b)
+
+                love.graphics.setColor(121 / 255, 103 / 255, 85 / 255)
+                love.graphics.rectangle('fill', 32 * 15, 0, 32 * 8, SCREEN_HEIGHT)
+                timer:draw()
             end
         }
-    },
-    --
-    --
-    draw = function(camera)
-        if prev_panel then
-            prev_panel:draw()
-        end
-
-        panel:draw()
-        timer:draw()
-
-        -- local Font = _G.JM_Font
-        -- Font:print(panel:is_complete() and "COMPLETE" or "NOT", panel.x, 32 * 10)
-    end
+    }
 }
 
 return State

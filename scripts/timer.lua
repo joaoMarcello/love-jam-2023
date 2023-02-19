@@ -4,22 +4,36 @@ local Font = _G.JM_Font
 local string_format = string.format
 local math_floor = math.floor
 
+---@type JM.Font.Font
+local font
+
 ---@class Game.Component.Timer : JM.Template.Affectable
 local Timer = setmetatable({}, Affectable)
 Timer.__index = Timer
 
+---@param state GameState.Game
 ---@return Game.Component.Timer
-function Timer:new()
+function Timer:new(state)
     local obj = Affectable:new()
     setmetatable(obj, self)
-    Timer.__constructor__(obj)
+    Timer.__constructor__(obj, state)
     return obj
 end
 
-function Timer:__constructor__()
-    self.time_in_sec = 20
+---@param state GameState.Game
+function Timer:__constructor__(state)
+    self.time_in_sec = 60 * 2 + 10
     self.speed = 1.0
     self.acumulator = 0.0
+
+    self.gamestate = state
+
+    self.x = 32 * 16
+    self.y = 32 * 4
+
+    if not font then
+        font = state:game_get_gui_font()
+    end
 end
 
 function Timer:init()
@@ -38,6 +52,25 @@ end
 
 function Timer:time_is_up()
     return self.time_in_sec <= 0.0
+end
+
+function Timer:flick()
+    local eff = self:apply_effect("flickering", { speed = 0.1, duration = 0.2 * 6 })
+    eff:set_final_action(function()
+        self:set_visible(true)
+    end)
+end
+
+function Timer:increment(value)
+    value = value or 0
+    self.time_in_sec = self.time_in_sec + value
+    if self.time_in_sec <= 0 then self.time_in_sec = 0 end
+end
+
+function Timer:decrement(value)
+    value = -math.abs(value)
+    self:increment(value)
+    self:flick()
 end
 
 function Timer:minute()
@@ -69,24 +102,34 @@ function Timer:get_time2()
 end
 
 function Timer:update(dt)
+    Affectable.update(self, dt)
+
     self.time_in_sec = self.time_in_sec - dt
     if self.time_in_sec < 0 then self.time_in_sec = 0 end
 end
 
-function Timer:draw()
+function Timer:my_draw()
     local min, sec, dec = self:get_time2()
 
-    Font.current:push()
-    Font.current:set_color(_G.JM_Utils:get_rgba(1, 1, 0, 1))
-    Font:print(string_format("%.1f", self.time_in_sec), 500, 64)
-    Font:print(string_format("%02d", min), 500, 90)
-    Font:print(string_format("%02d", sec), 500, 130)
-    Font:print(string_format("%02d", dec), 500, 160)
-
+    font:push()
+    font:set_color(_G.JM_Utils:get_rgba(1, 1, 0, 1))
+    -- font:set_font_size(28)
     local sm = string_format("%02d:%02d:%02d", min, sec, dec)
-    Font:print(sm, 500, 200)
+    font:print(sm, self.x, self.y + 32)
+    font:pop()
+end
 
-    Font.current:pop()
+function Timer:draw()
+    Affectable.draw(self, self.my_draw)
+
+    font:push()
+    font:set_color(_G.JM_Utils:get_rgba(1, 1, 0, 1))
+    font:set_font_size(font.__font_size - 4)
+    font:print("TIME",
+        self.x,
+        self.y + 32 - font.__font_size - font.__line_space
+    )
+    font:pop()
 end
 
 return Timer
