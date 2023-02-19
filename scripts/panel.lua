@@ -276,7 +276,7 @@ end
 
 --=========================================================================
 function Panel:mouse_pressed(x, y, button)
-    if self.is_shaking or self.__lock then return end
+    if self.is_shaking or self.__lock or self:is_complete() then return end
 
     if button == 2 then
         local wire = self:selected_wire()
@@ -298,15 +298,19 @@ function Panel:mouse_pressed(x, y, button)
                 wire.state = Wire.States.inactive
                 self:shake()
                 local timer = self.gamestate:game_get_timer()
+
                 timer:decrement(5)
+                self.gamestate:game_decrement_param("score", 100)
 
                 dispatch_event(self, Events.shock)
                 --
             elseif self:is_complete() then
                 dispatch_event(self, Events.complete)
+                self.gamestate:game_increment_param("score", 500)
                 --
             else
                 dispatch_event(self, Events.plug)
+                self.gamestate:game_increment_param("score", 50)
             end
 
             self.selected_id = nil

@@ -29,7 +29,7 @@ function Timer:__constructor__(state)
     self.gamestate = state
 
     self.x = 32 * 16
-    self.y = 32 * 4
+    self.y = 32 * 3
 
     if not font then
         font = state:game_get_gui_font()
@@ -123,8 +123,8 @@ function Timer:draw()
     Affectable.draw(self, self.my_draw)
 
     font:push()
-    font:set_color(_G.JM_Utils:get_rgba(1, 1, 0, 1))
-    font:set_font_size(font.__font_size - 4)
+    font:set_color(_G.JM_Utils:get_rgba(1, 1, 1, 1))
+    font:set_font_size(font.__font_size - 6)
     font:print("TIME",
         self.x,
         self.y + 32 - font.__font_size - font.__line_space

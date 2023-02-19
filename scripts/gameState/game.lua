@@ -1,9 +1,12 @@
 local love = _G.love
 local Pack = _G.JM_Love2D_Package
+local Utils = _G.JM_Utils
 local Generator = Pack.FontGenerator
 
 local Panel = require "scripts.panel"
 local Timer = require "scripts.timer"
+local DisplayLvl = require "scripts.displayLevel"
+local DisplayValue = require "scripts.display_value"
 
 ---@class GameState.Game : JM.Scene, GameState
 local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT,
@@ -37,6 +40,15 @@ local prev_panel
 ---@type Game.Component.Timer
 local timer
 
+---@type Game.Component.DisplayLvl
+local display_level
+
+---@type Game.Component.DisplayValue
+local display_score
+
+---@type Game.Component.DisplayValue
+local display_hi_score
+
 ---@type JM.Font.Font
 local gui_font
 
@@ -54,15 +66,20 @@ function State:game_get_gui_font()
     return gui_font
 end
 
----@alias GameState.Game.Params "level"|"shocks"|"score"|"max_score"
+---@alias GameState.Game.Params "level"|"shocks"|"score"|"hi_score"
 
+---@param index GameState.Game.Params
+function State:game_get_param(index)
+    return param and param[index]
+end
+
+---@param index GameState.Game.Params
 function State:game_set_param(index, value)
     if not param or not value then return end
-    if not param[index] then return end
-
     param[index] = value
 end
 
+---@param index GameState.Game.Params
 function State:game_increment_param(index, value)
     value = value or 1
     if not param then return end
@@ -70,9 +87,10 @@ function State:game_increment_param(index, value)
     local p = param[index]
     if not p then return end
 
-    param[index] = p + value
+    param[index] = Utils:clamp(p + value, 0, math.huge)
 end
 
+---@param index GameState.Game.Params
 function State:game_decrement_param(index, value)
     value = math.abs(value) * ( -1)
     self:game_increment_param(index, value)
@@ -93,6 +111,8 @@ State:implements {
 
         Panel:load()
         Timer:load()
+        DisplayLvl:load()
+        DisplayValue:load()
     end,
     --
     --
@@ -104,14 +124,28 @@ State:implements {
             max_score = 1000
         }
 
+        State:game_set_param("hi_score", 2000)
+        State:game_set_param("shocks", 0)
+
         panel = Panel:new(State, { x = 32 * 3 })
         timer = Timer:new(State)
+
+        display_level = DisplayLvl:new(State)
+        display_score = DisplayValue:new(State)
+
+        display_hi_score = DisplayValue:new(State, {
+            track = "hi_score",
+            display = "HI SCORE",
+            y = 32 * 8
+        })
     end,
     --
     --
     finish = function()
         Panel:finish()
         Timer:finish()
+        DisplayLvl:finish()
+        DisplayValue:finish()
     end,
     --
     --
@@ -139,6 +173,9 @@ State:implements {
         camera:update(dt)
 
         panel:update(dt)
+        display_level:update(dt)
+        display_score:update(dt)
+        display_hi_score:update(dt)
 
         if panel:is_complete() and panel.complete_time >= 2.0 then
             prev_panel = panel
@@ -149,6 +186,8 @@ State:implements {
 
             camera.target = nil
             camera.follow_speed_x = 0
+
+            display_level:increment()
         end
 
         if panel:is_locked() and camera:target_on_focus_x() then
@@ -157,6 +196,11 @@ State:implements {
 
         if not panel:is_locked() and not panel:is_complete() then
             timer:update(dt)
+        end
+
+        local score = param['score']
+        if score > param['hi_score'] then
+            param['hi_score'] = score
         end
     end,
     --
@@ -190,7 +234,11 @@ State:implements {
 
                 love.graphics.setColor(121 / 255, 103 / 255, 85 / 255)
                 love.graphics.rectangle('fill', 32 * 15, 0, 32 * 8, SCREEN_HEIGHT)
+
+                display_level:draw()
                 timer:draw()
+                display_score:draw()
+                display_hi_score:draw()
             end
         }
     }
