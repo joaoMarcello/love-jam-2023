@@ -110,6 +110,13 @@ function Panel:__constructor__(state, args)
     self.selected_id = nil
 
     self.complete_time = 0.0
+
+    local font = state:game_get_gui_font()
+    self.phrase = font:generate_phrase("<color, 1, 1, 0> <effect=flickering, speed=0.3> COMPLETE",
+        self.x,
+        self.y + self.h / 2 - font.__font_size, self.x + self.w,
+        "center"
+    )
 end
 
 --==========================================================================
@@ -403,6 +410,17 @@ function Panel:my_draw()
 
     local Font = _G.JM_Font
     Font:print(self:is_complete() and "<color, 1, 1, 1>Complete" or "<color, 1, 1, 1>NOT", self.x + self.w, self.y)
+
+    if self:is_complete()
+        and self.gamestate:game_get_panel() == self
+    then
+        love.graphics.setColor(0, 0, 0, 1)
+        local w = 32 * 6
+        love.graphics.rectangle("fill", self.x + self.w / 2 - w / 2,
+            self.y + 32 * 5 - 20,
+            w, 64)
+        self.phrase:draw(self.x, self.y + 32 * 5, "center")
+    end
 end
 
 function Panel:draw()

@@ -123,26 +123,32 @@ State:implements {
     --
     --
     init = function()
+        State.camera.x = 0
+
         State:game_set_param("score", 0)
         State:game_set_param("shocks", 0)
         State:game_set_param("level", 0)
 
         panel = Panel:new(State, { x = 32 * 3 })
+
         timer = Timer:new(State)
 
         display_level = DisplayLvl:new(State)
-        display_score = DisplayValue:new(State)
+
+        display_score = DisplayValue:new(State, {
+            y = 32 * 5
+        })
 
         display_hi_score = DisplayValue:new(State, {
             track = "hi_score",
             display = "HI SCORE",
-            y = 32 * 8
+            y = 32 * 7
         })
 
         display_shocks = DisplayValue:new(State, {
             track = "shocks",
             display = "SHOCKS",
-            y = 32 * 10,
+            y = 32 * 9,
             format = "%d"
         })
     end,
@@ -190,6 +196,12 @@ State:implements {
         if timer:time_is_up() then
             panel:lock()
             State:game_set_param("level", display_level:get_value())
+            State:game_set_param("hi_score", param['score'])
+            if not panel.is_shaking then
+                State:init()
+                return
+            end
+            -- return
         end
 
         panel:update(dt)
@@ -210,6 +222,9 @@ State:implements {
             camera.follow_speed_x = 0
 
             display_level:increment()
+            if display_level:get_value() % 2 == 1 then
+                timer:increment(10)
+            end
         end
 
         if panel:is_locked() and camera:target_on_focus_x() then

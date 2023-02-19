@@ -22,7 +22,7 @@ end
 
 ---@param state GameState.Game
 function Timer:__constructor__(state)
-    self.time_in_sec = 60 * 2 + 10
+    self.time_in_sec = 60 * 1 + 10
     self.speed = 1.0
     self.acumulator = 0.0
 
@@ -30,6 +30,9 @@ function Timer:__constructor__(state)
 
     self.x = 32 * 16
     self.y = 32 * 3
+
+    self.ox = (32 * 5) / 2
+    self.oy = 32 + 16
 
     if not font then
         font = state:game_get_gui_font()
@@ -61,10 +64,18 @@ function Timer:flick()
     end)
 end
 
+function Timer:pulse()
+    local eff = self:apply_effect("pulse", { range = 0.1, speed = 0.3, duration = 0.3 * 2 })
+end
+
 function Timer:increment(value)
     value = value or 0
     self.time_in_sec = self.time_in_sec + value
     if self.time_in_sec <= 0 then self.time_in_sec = 0 end
+
+    if value > 0 then
+        self:pulse()
+    end
 end
 
 function Timer:decrement(value)
