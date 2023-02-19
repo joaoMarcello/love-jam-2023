@@ -408,8 +408,8 @@ function Panel:my_draw()
         wire:draw()
     end
 
-    local Font = _G.JM_Font
-    Font:print(self:is_complete() and "<color, 1, 1, 1>Complete" or "<color, 1, 1, 1>NOT", self.x + self.w, self.y)
+    -- local Font = _G.JM_Font
+    -- Font:print(self:is_complete() and "<color, 1, 1, 1>Complete" or "<color, 1, 1, 1>NOT", self.x + self.w, self.y)
 
     if self:is_complete()
         and self.gamestate:game_get_panel() == self

@@ -65,7 +65,7 @@ function Timer:flick()
 end
 
 function Timer:pulse()
-    local eff = self:apply_effect("pulse", { range = 0.1, speed = 0.3, duration = 0.3 * 2 })
+    local eff = self:apply_effect("pulse", { range = 0.15, speed = 0.3, duration = 0.3 * 4 })
 end
 
 function Timer:increment(value)
