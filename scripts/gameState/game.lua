@@ -18,9 +18,10 @@ State.camera:toggle_world_bounds()
 State.camera.border_color = { 0, 0, 0, 0 }
 
 State.camera:set_focus_x(32 * 3 * State.camera.desired_scale)
--- State.camera.max_speed_x = 32 * 7
+-- State.camera.max_speed_x = 32 * 11
 -- State.camera.default_initial_speed_x = 1
 -- State.camera.acc_x = 32 * 4
+
 State.camera.constant_speed_x = 32 * 11
 --============================================================================
 ---@type Game.Component.Panel
@@ -74,7 +75,7 @@ State:implements {
 
         panel:update(dt)
 
-        if panel:is_complete() and panel.complete_time >= 0.8 then
+        if panel:is_complete() and panel.complete_time >= 2.0 then
             prev_panel = panel
 
             panel = Panel:new(State, {
@@ -83,6 +84,10 @@ State:implements {
 
             camera.target = nil
             camera.follow_speed_x = 0
+        end
+
+        if panel:is_locked() and camera:target_on_focus_x() then
+            panel:unlock()
         end
     end,
     --

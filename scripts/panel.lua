@@ -69,6 +69,8 @@ function Panel:__constructor__(state, args)
     -- self.occupied[4][5] = true
     -- self.occupied[4][7] = true
 
+    self.__lock = true
+
     self.sockets = {}
 
     self.wires = {}
@@ -150,6 +152,18 @@ function Panel:get_event(name)
 
     local evt = self.events and self.events[evt_type]
     return evt
+end
+
+function Panel:is_locked()
+    return self.__lock
+end
+
+function Panel:lock()
+    if not self.__lock then self.__lock = true end
+end
+
+function Panel:unlock()
+    if self.__lock then self.__lock = false end
 end
 
 function Panel:shake()
@@ -262,7 +276,7 @@ end
 
 --=========================================================================
 function Panel:mouse_pressed(x, y, button)
-    if self.is_shaking then return end
+    if self.is_shaking or self.__lock then return end
 
     if button == 2 then
         local wire = self:selected_wire()
@@ -314,6 +328,8 @@ function Panel:mouse_pressed(x, y, button)
 end
 
 function Panel:update(dt)
+    if self.__lock then return end
+
     Component.update(self, dt)
 
     if self:is_complete() then
