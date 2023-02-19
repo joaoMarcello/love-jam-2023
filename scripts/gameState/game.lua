@@ -2,6 +2,7 @@ local love = _G.love
 local Pack = _G.JM_Love2D_Package
 
 local Panel = require "scripts.panel"
+local Timer = require "scripts.timer"
 
 ---@class GameState.Game : JM.Scene, GameState
 local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT,
@@ -30,23 +31,61 @@ local panel
 ---@type Game.Component.Panel
 local prev_panel
 
+---@type Game.Component.Timer
+local timer
+
+local param
+
+---@alias GameState.Game.Params "level"|"shocks"|"score"|"max_score"
+
+function State:game_set_param(index, value)
+    if not param or not value then return end
+    if not param[index] then return end
+
+    param[index] = value
+end
+
+function State:game_increment_param(index, value)
+    value = value or 1
+    if not param then return end
+
+    local p = param[index]
+    if not p then return end
+
+    param[index] = p + value
+end
+
+function State:game_decrement_param(index, value)
+    value = math.abs(value) * ( -1)
+    self:game_increment_param(index, value)
+end
+
 --============================================================================
 State:implements {
     --
     --
     load = function()
         Panel:load()
+        Timer:load()
     end,
     --
     --
     init = function()
+        param = {
+            level = 1,
+            shocks = 0,
+            score = 0,
+            max_score = 1000
+        }
+
         panel = Panel:new(State, { x = 32 * 3 })
-        --panel:on_event("complete", on_complete_action)
+        timer = Timer:new()
     end,
     --
     --
     finish = function()
         Panel:finish()
+        Timer:finish()
     end,
     --
     --
@@ -73,6 +112,7 @@ State:implements {
         camera:follow(panel.x, panel.y, 'panel')
         camera:update(dt)
 
+        timer:update(dt)
         panel:update(dt)
 
         if panel:is_complete() and panel.complete_time >= 2.0 then
@@ -111,6 +151,7 @@ State:implements {
         end
 
         panel:draw()
+        timer:draw()
 
         -- local Font = _G.JM_Font
         -- Font:print(panel:is_complete() and "COMPLETE" or "NOT", panel.x, 32 * 10)
