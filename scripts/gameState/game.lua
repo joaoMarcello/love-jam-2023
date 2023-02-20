@@ -65,11 +65,15 @@ function State:game_get_panel()
     return panel
 end
 
+function State:game_get_display_level()
+    return display_level
+end
+
 function State:game_get_gui_font()
     return gui_font
 end
 
----@alias GameState.Game.Params "level"|"shocks"|"score"|"hi_score"
+---@alias GameState.Game.Params "level"|"shocks"|"score"|"hi_score"|"last_hi_score"
 
 ---@param index GameState.Game.Params
 function State:game_get_param(index)
@@ -128,6 +132,7 @@ State:implements {
         State:game_set_param("score", 0)
         State:game_set_param("shocks", 0)
         State:game_set_param("level", 0)
+        State:game_set_param("last_hi_score", param['hi_score'])
 
         panel = Panel:new(State, { x = 32 * 3 })
 
@@ -169,9 +174,9 @@ State:implements {
             State.camera:toggle_world_bounds()
         end
 
-        if key == "r" then
-            State:init()
-        end
+        -- if key == "r" then
+        --     State:init()
+        -- end
     end,
     --
     --
@@ -195,9 +200,17 @@ State:implements {
         -- GAME OVER
         if timer:time_is_up() then
             panel:lock()
-            State:game_set_param("level", display_level:get_value())
-            State:game_set_param("hi_score", param['score'])
+
             if not panel.is_shaking then
+                local score = param['score']
+                local hi_score = param['hi_score']
+                param['last_hi_score'] = hi_score
+
+                if score > hi_score then
+                    param['hi_score'] = score
+                end
+                State:game_set_param("level", display_level:get_value())
+                -- State:game_set_param("hi_score", param['score'])
                 State:init()
                 return
             end
@@ -223,7 +236,7 @@ State:implements {
 
             display_level:increment()
             if display_level:get_value() % 2 == 1 then
-                timer:increment(10)
+                timer:increment(15)
             end
         end
 

@@ -56,7 +56,7 @@ function UNPAUSE(state)
 end
 
 function love.load()
-    CHANGE_GAME_STATE(require 'scripts.gameState.game', true, nil, nil, nil, nil, nil)
+    CHANGE_GAME_STATE(require 'scripts.gameState.endGame', true, nil, nil, nil, nil, nil)
 end
 
 function love.keypressed(key)

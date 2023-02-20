@@ -34,6 +34,8 @@ function Timer:__constructor__(state)
     self.ox = (32 * 5) / 2
     self.oy = 32 + 16
 
+    self.__lock = false
+
     if not font then
         font = state:game_get_gui_font()
     end
@@ -59,8 +61,10 @@ end
 
 function Timer:flick()
     local eff = self:apply_effect("flickering", { speed = 0.1, duration = 0.2 * 6 })
+    self.is_flick = true
     eff:set_final_action(function()
         self:set_visible(true)
+        self.is_flick = false
     end)
 end
 
@@ -112,11 +116,21 @@ function Timer:get_time2()
     return minute, seconds, dec
 end
 
+function Timer:lock()
+    if not self.__lock then self.__lock = true end
+end
+
+function Timer:unlock()
+    if self.__lock then self.__lock = false end
+end
+
 function Timer:update(dt)
     Affectable.update(self, dt)
 
-    self.time_in_sec = self.time_in_sec - dt
-    if self.time_in_sec < 0 then self.time_in_sec = 0 end
+    if not self.is_flick and not self.__lock then
+        self.time_in_sec = self.time_in_sec - dt
+        if self.time_in_sec < 0 then self.time_in_sec = 0 end
+    end
 end
 
 function Timer:my_draw()

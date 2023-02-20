@@ -71,6 +71,8 @@ function Panel:__constructor__(state, args)
 
     self.__lock = true
 
+    self.n_shocks = 0
+
     self.sockets = {}
 
     self.wires = {}
@@ -308,7 +310,8 @@ function Panel:mouse_pressed(x, y, button)
                 self:shake()
                 local timer = self.gamestate:game_get_timer()
 
-                timer:decrement(5)
+                timer:decrement(5 + self.n_shocks)
+                self.n_shocks = self.n_shocks + 1
                 self.gamestate:game_decrement_param("score", 100)
                 self.gamestate:game_increment_param("shocks", 1)
 
@@ -316,7 +319,10 @@ function Panel:mouse_pressed(x, y, button)
                 --
             elseif self:is_complete() then
                 dispatch_event(self, Events.complete)
-                self.gamestate:game_increment_param("score", 500)
+                local level = self.gamestate:game_get_display_level()
+                local bonus = (level:get_value() - 1) * 100
+
+                self.gamestate:game_increment_param("score", 500 + bonus)
                 --
             else
                 dispatch_event(self, Events.plug)
