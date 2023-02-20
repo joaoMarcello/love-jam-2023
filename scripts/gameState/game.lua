@@ -211,7 +211,8 @@ State:implements {
                 end
                 State:game_set_param("level", display_level:get_value())
                 -- State:game_set_param("hi_score", param['score'])
-                State:init()
+                -- State:init()
+                CHANGE_GAME_STATE(require 'scripts.gameState.endGame', true, false, false, false, true, false)
                 return
             end
             -- return
