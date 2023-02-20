@@ -116,7 +116,7 @@ State:implements {
 
             ---@param camera JM.Camera.Camera
             draw = function(self, camera)
-                love.graphics.setColor(163 / 255, 165 / 255, 181 / 255, 1)
+                love.graphics.setColor(109 / 255, 117 / 255, 141 / 255, 1)
                 local w = SCREEN_WIDTH - 32 * 3 * 2
                 local h = 32 * 13
                 love.graphics.rectangle("fill", SCREEN_WIDTH / 2 - w / 2, 32, w, h)

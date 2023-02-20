@@ -179,9 +179,12 @@ State:implements {
             State.camera:toggle_world_bounds()
         end
 
-        -- if key == "r" then
-        --     State:init()
-        -- end
+        if not timer:time_is_up()
+            and not panel:is_complete()
+            and key == "return"
+        then
+            CHANGE_GAME_STATE(require "scripts.gameState.pause", true, false, true, true, true, false)
+        end
     end,
     --
     --
