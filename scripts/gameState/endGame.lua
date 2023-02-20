@@ -18,9 +18,9 @@ local gameState
 
 local score, hi_score, level, shocks, last_hi_score
 
-local text
-
 local buttons
+
+local time_off
 --==========================================================================
 
 State:implements {
@@ -57,6 +57,8 @@ State:implements {
                 CHANGE_GAME_STATE(gameState, true, true, false, false, false, false)
             end
         end)
+
+        time_off = 0.0
     end,
     --
     --
@@ -86,6 +88,9 @@ State:implements {
     --
     --
     update = function(dt)
+        time_off = time_off + dt
+        if time_off <= 1.0 then return end
+
         local mx, my = State:get_mouse_position()
 
         for i = 1, #buttons do
@@ -111,7 +116,7 @@ State:implements {
 
             ---@param camera JM.Camera.Camera
             draw = function(self, camera)
-                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.setColor(163 / 255, 165 / 255, 181 / 255, 1)
                 local w = SCREEN_WIDTH - 32 * 3 * 2
                 local h = 32 * 13
                 love.graphics.rectangle("fill", SCREEN_WIDTH / 2 - w / 2, 32, w, h)
@@ -122,22 +127,36 @@ State:implements {
                     local px, py = 32 * 4, 32 * 2
                     local right = SCREEN_WIDTH - px
 
+                    local color1 = "<color, 1, 1, 1>"
+                    local color2 = "<color, 1, 1, 0>"
+
                     font:push()
 
                     font:printf("END GAME", px, py, "center", right)
 
-                    font:printf("Max Level " .. level, px, py + 32 * 2, "left", right)
+                    --======================================================
+                    font:printf("<color, 0, 0, 0> Max Level: " .. level, px + 1, py + 32 * 2 + 1, "left", right)
 
-                    font:printf("Number of shocks: " .. shocks, px, py + 32 * 3.5, "left", right)
+                    font:printf(color1 .. "Max Level: " .. color2 .. level, px, py + 32 * 2, "left", right)
+                    --======================================================
 
-                    font:printf("Hi Score: " .. hi_score, px, py + 32 * 5, "left", right)
+                    font:printf("<color, 0, 0, 0>Number of shocks: " .. shocks, px + 1, py + 32 * 3.5 + 1, "left", right)
 
-                    local text = "Score: " .. score
+                    font:printf(color1 .. "Number of shocks: " .. color2 .. shocks, px, py + 32 * 3.5, "left", right)
+                    --======================================================
+
+                    font:printf("<color, 0, 0, 0>Hi Score: " .. hi_score, px + 1, py + 32 * 5 + 1, "left", right)
+
+                    font:printf(color1 .. "Hi Score: " .. color2 .. hi_score, px, py + 32 * 5, "left", right)
+                    --======================================================
+
+                    local text = color1 .. "Score: " .. color2 .. score
                     if last_hi_score < score then
                         text = text ..
-                            " <font-size=12> <effect=ghost, speed = 0.9, min=0.4>   <color>\t NEW HI SCORE </color>"
+                            " <font-size=12> <effect=ghost, speed = 0.9, min=0.1>   <color>\t NEW HI SCORE </color>"
                     end
 
+                    font:printx("<color, 0, 0, 0>Score: " .. score, px + 1, py + 32 * 6.5 + 1, right, "left")
                     font:printx(text, px, py + 32 * 6.5, right, "left")
 
                     font:pop()

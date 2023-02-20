@@ -22,7 +22,7 @@ end
 
 ---@param state GameState.Game
 function Timer:__constructor__(state)
-    self.time_in_sec = 60 * 1 + 30
+    self.time_in_sec = 10 --60 * 1 + 30
     self.speed = 1.0
     self.acumulator = 0.0
 
@@ -116,18 +116,35 @@ function Timer:get_time2()
     return minute, seconds, dec
 end
 
-function Timer:lock()
-    if not self.__lock then self.__lock = true end
+function Timer:lock(time)
+    if not self.__lock then
+        self.__lock = true
+    end
 end
 
 function Timer:unlock()
     if self.__lock then self.__lock = false end
 end
 
+function Timer:pause(time)
+    self.__pause = time or 0.5
+    self:lock()
+end
+
 function Timer:update(dt)
     Affectable.update(self, dt)
 
-    if not self.is_flick and not self.__lock then
+    local panel = self.gamestate:game_get_panel()
+
+    if self.__pause then
+        self.__pause = self.__pause - dt
+        if self.__pause <= 0 then
+            self.__pause = false
+            self:unlock()
+        end
+    end
+
+    if not self.__lock and not panel:is_locked() then
         self.time_in_sec = self.time_in_sec - dt
         if self.time_in_sec < 0 then self.time_in_sec = 0 end
     end

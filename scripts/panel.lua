@@ -182,7 +182,7 @@ function Panel:shake()
         self.is_shaking = true
 
         local eff = self:apply_effect("earthquake", {
-            duration = 0.5,
+            duration = 0.6,
             random = true,
             range_x = 3,
             range_y = 3
@@ -311,6 +311,8 @@ function Panel:mouse_pressed(x, y, button)
                 local timer = self.gamestate:game_get_timer()
 
                 timer:decrement(5 + self.n_shocks)
+                timer:pause(0.2 * 6)
+
                 self.n_shocks = self.n_shocks + 1
                 self.gamestate:game_decrement_param("score", 100)
                 self.gamestate:game_increment_param("shocks", 1)

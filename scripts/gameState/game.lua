@@ -57,6 +57,9 @@ local gui_font
 
 local param
 
+local time_endgame
+--=========================================================================
+
 function State:game_get_timer()
     return timer
 end
@@ -156,6 +159,8 @@ State:implements {
             y = 32 * 9,
             format = "%d"
         })
+
+        time_endgame = 0
     end,
     --
     --
@@ -200,8 +205,9 @@ State:implements {
         -- GAME OVER
         if timer:time_is_up() then
             panel:lock()
+            time_endgame = time_endgame + dt
 
-            if not panel.is_shaking then
+            if not panel.is_shaking and time_endgame >= 3.0 then
                 local score = param['score']
                 local hi_score = param['hi_score']
                 param['last_hi_score'] = hi_score
@@ -212,10 +218,10 @@ State:implements {
                 State:game_set_param("level", display_level:get_value())
                 -- State:game_set_param("hi_score", param['score'])
                 -- State:init()
-                CHANGE_GAME_STATE(require 'scripts.gameState.endGame', true, false, false, false, true, false)
+                CHANGE_GAME_STATE(require 'scripts.gameState.endGame', true, false, false, false, false, false)
                 return
             end
-            -- return
+            --return
         end
 
         panel:update(dt)
@@ -225,7 +231,10 @@ State:implements {
         display_hi_score:update(dt)
         display_shocks:update(dt)
 
-        if panel:is_complete() and panel.complete_time >= 2.0 then
+        if panel:is_complete()
+            and panel.complete_time >= 2.0
+            and not timer:time_is_up()
+        then
             prev_panel = panel
 
             panel = Panel:new(State, {
@@ -241,7 +250,10 @@ State:implements {
             end
         end
 
-        if panel:is_locked() and camera:target_on_focus_x() then
+        if panel:is_locked()
+            and camera:target_on_focus_x()
+            and not timer:time_is_up()
+        then
             panel:unlock()
         end
 
@@ -286,6 +298,21 @@ State:implements {
                 display_score:draw()
                 display_hi_score:draw()
                 display_shocks:draw()
+
+                if timer:time_is_up() then
+                    local px, py, pw, ph = 32 * 5, panel.y + 32 * 5, 32 * 6, 32 * 3
+
+                    love.graphics.setColor(0, 0, 0, 1)
+                    love.graphics.rectangle("fill", px, py, pw, ph)
+
+
+                    local obj = gui_font:generate_phrase("<effect=wave, speed=0.6> <color, 1, 1, 0>Time is up!", px,
+                        py, px + pw, "center")
+
+                    local h = obj:text_height(obj:get_lines(px))
+
+                    obj:draw(px, py + ph / 2 - h / 2, "center")
+                end
             end
         }
     }
