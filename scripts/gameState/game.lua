@@ -292,8 +292,7 @@ State:implements {
                 end
 
                 panel:draw()
-
-                mouse_icon:draw()
+                -- mouse_icon:draw()
             end
         },
         --
@@ -339,7 +338,16 @@ State:implements {
                     countdown:draw()
                 end
             end
-        }
+        },
+        --
+        --
+        {
+            name = "Mouse Icon",
+
+            draw = function(self, camera)
+                mouse_icon:draw()
+            end
+        },
     }
 }
 

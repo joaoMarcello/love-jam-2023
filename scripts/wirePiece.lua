@@ -70,6 +70,8 @@ function Piece:__constructor__(state, wire, args)
     }
 
     self.anima:set_color2(unpack(wire.color__))
+
+    self.allow_shadow = true
 end
 
 function Piece:load()
@@ -87,7 +89,8 @@ function Piece:update(dt)
 end
 
 function Piece:draw()
-    if self.id:match("middle") or true then
+    -- if true or self.id:match("middle") then
+    if self.allow_shadow then
         self:draw_shadow()
     end
 

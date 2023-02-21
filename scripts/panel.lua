@@ -303,7 +303,7 @@ function Panel:mouse_pressed(x, y, button)
         local wire = self:selected_wire()
 
         if wire then
-            local success = wire:plug(self.cur_socket)
+            local success = wire:try_plug(self.cur_socket)
 
             if not success then
                 wire.state = Wire.States.inactive

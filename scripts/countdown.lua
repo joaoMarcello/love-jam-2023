@@ -77,12 +77,6 @@ function Count:update(dt)
 end
 
 function Count:my_draw()
-    love.graphics.setColor(0.9, 0.9, 0.9)
-    love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
-
-    love.graphics.setColor(0, 0, 0, 1)
-    love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
-
     ---@type JM.Font.Phrase
     local obj = self.objects[self.current]
 
@@ -93,6 +87,12 @@ function Count:my_draw()
 end
 
 function Count:draw()
+    love.graphics.setColor(0.9, 0.9, 0.9)
+    love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
+
+    love.graphics.setColor(0, 0, 0, 1)
+    love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
+
     Affectable.draw(self, self.my_draw)
 end
 

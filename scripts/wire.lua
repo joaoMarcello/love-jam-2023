@@ -1,5 +1,6 @@
 local Component = require "scripts.component"
 local Piece = require "scripts.wirePiece"
+local Plug = require "scripts.wirePlug"
 
 ---@enum Game.Component.Wire.States
 local States = {
@@ -233,6 +234,9 @@ function Wire:__constructor__(state, panel, args)
 
     self.pieces_track = nil
 
+    self.plug = Plug:new(state, self, {
+
+    })
     -- self:plug(self.id)
 end
 
@@ -240,6 +244,7 @@ end
 do
     function Wire:load()
         Piece:load()
+        Plug:load()
 
         img = img or {
                 -- ["wire"] = love.graphics.newImage('/data/image/wire.png')
@@ -252,6 +257,7 @@ do
 
     function Wire:finish()
         Piece:finish()
+        Plug:finish()
 
         if img then
             local r = img['wire'] and img['wire']:release()
@@ -396,7 +402,7 @@ function Wire:turn_tracking()
     return false
 end
 
-function Wire:plug(socket)
+function Wire:try_plug(socket)
     if self.state ~= States.plugged then
         if socket ~= self.id then
             return false
@@ -405,6 +411,7 @@ function Wire:plug(socket)
         self.state = States.plugged
         self.pieces_track = self:get_track_pieces(self.id)
         self.color__ = self.color_hidden or Colors.white
+        self.plug:plug()
         return true
     end
 end
@@ -424,6 +431,8 @@ function Wire:update(dt)
     if self.state == States.tracking then
         tracking_update(self, dt)
     end
+
+    self.plug:update(dt)
 end
 
 function Wire:draw()
@@ -445,6 +454,8 @@ function Wire:draw()
             end
         end
     end
+
+    self.plug:draw()
 
     -- Pack.Font:print("" .. self.pos[1] .. "-" .. self.pos[2] .. "-" .. self.pos[3], self.x, self.y - 20)
 
