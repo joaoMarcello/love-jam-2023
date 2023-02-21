@@ -1,13 +1,21 @@
 local Component = require "scripts.component"
 
+---@enum MouseIcon2.States
+local States = {
+    normal = 1,
+    point = 2
+}
+
 ---@class MouseIcon2 : GameComponent
 local Icon = setmetatable({}, Component)
 Icon.__index = Icon
+Icon.States = States
 
+---@return MouseIcon2
 function Icon:new(state, args)
     args = args or {}
-    args.w = 16
-    args.h = 16
+    args.w = 8
+    args.h = 8
 
     local obj = Component:new(state, args)
     setmetatable(obj, self)
@@ -18,6 +26,8 @@ end
 ---@param state GameState
 function Icon:__constructor__(state, args)
     self.gamestate = state
+
+    self:set_state(States.normal)
 end
 
 function Icon:load()
@@ -28,6 +38,11 @@ function Icon:finish()
 
 end
 
+function Icon:set_state(state)
+    if self.state == state then return end
+    self.state = state
+end
+
 function Icon:update(dt)
     Component.update(self, dt)
 
@@ -36,8 +51,13 @@ function Icon:update(dt)
 end
 
 function Icon:my_draw()
-    love.graphics.setColor(0, 0, 1)
-    love.graphics.circle("fill", self.x, self.y, 16)
+    if self.state == States.normal then
+        love.graphics.setColor(0, 0, 1)
+    else
+        love.graphics.setColor(1, 0, 0)
+    end
+
+    love.graphics.circle("fill", self.x, self.y, self.w)
 end
 
 function Icon:draw()

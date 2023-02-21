@@ -134,6 +134,8 @@ State:implements {
         DisplayValue:load()
         Count:load()
         Icon:load()
+
+        love.mouse.setVisible(false)
     end,
     --
     --

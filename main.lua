@@ -4,7 +4,7 @@ Pack = require "jm-love2d-package.init"
 math.randomseed(os.time())
 love.graphics.setBackgroundColor(0, 0, 0, 1)
 love.graphics.setDefaultFilter("nearest", "nearest")
--- love.mouse.setVisible(false)
+love.mouse.setVisible(false)
 
 collectgarbage("setstepmul", 300)
 collectgarbage("setpause", 200)

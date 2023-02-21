@@ -1,6 +1,7 @@
 local Pack = _G.JM_Love2D_Package
 
 local Button = require "scripts.button_endgame"
+local MouseIcon = require "scripts.mouseIcon2"
 
 ---@class GameState.EndGame : JM.Scene, GameState
 local State = _G.JM_Love2D_Package.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -21,11 +22,14 @@ local score, hi_score, level, shocks, last_hi_score
 local buttons
 
 local time_off
+
+---@type MouseIcon2
+local mouse_icon
 --==========================================================================
 
 State:implements {
     load = function()
-
+        MouseIcon:load()
     end,
     --
     --
@@ -70,6 +74,8 @@ State:implements {
         end)
 
         time_off = 0.0
+
+        mouse_icon = MouseIcon:new(State)
     end,
     --
     --
@@ -99,10 +105,14 @@ State:implements {
     --
     --
     update = function(dt)
+        mouse_icon:update(dt)
+
         time_off = time_off + dt
         if time_off <= 1.0 then return end
 
         local mx, my = State:get_mouse_position()
+
+        local one_bt_is_focused = false
 
         for i = 1, #buttons do
             ---@type Button
@@ -117,7 +127,13 @@ State:implements {
             end
 
             buttons[i]:update(dt)
+
+            if button.on_focus then
+                one_bt_is_focused = true
+            end
         end
+
+        mouse_icon:set_state(one_bt_is_focused and mouse_icon.States.point or mouse_icon.States.normal)
     end,
     --
     --
@@ -188,6 +204,8 @@ State:implements {
 
                     button:draw()
                 end
+
+                mouse_icon:draw()
             end
         }
     }

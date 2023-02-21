@@ -1,3 +1,4 @@
+local MouseIcon = require "scripts.mouseIcon2"
 local Affectable = _G.JM_Affectable
 
 ---@enum MouseIcon.States
@@ -28,14 +29,16 @@ function Icon:__constructor__(state, args)
     self.h = 16
 
     self.state = States.prepare
+
+    self.mouseIcon = MouseIcon:new(state)
 end
 
 function Icon:load()
-
+    MouseIcon:load()
 end
 
 function Icon:finish()
-
+    MouseIcon:finish()
 end
 
 ---@param state MouseIcon.States
@@ -70,9 +73,14 @@ function Icon:get_color_state()
 end
 
 function Icon:is_in_point_mode()
-    if self.state == States.shock then return end
+    if self.state == States.shock then return false end
 
     local panel = self.gamestate:game_get_panel()
+    if panel:is_complete()
+        or self.gamestate:game_get_timer():time_is_up()
+    then
+        return false
+    end
 
     for i = 1, panel.n_wires do
         ---@type Game.Component.Wire
@@ -118,6 +126,13 @@ function Icon:update(dt)
         self:set_state(States.prepare)
         self.x, self.y = mx, my
     end
+
+    self.mouseIcon:update(dt)
+    if panel.cur_socket then
+        self.mouseIcon:set_state(self.mouseIcon.States.point)
+    else
+        self.mouseIcon:set_state(self.mouseIcon.States.normal)
+    end
 end
 
 function Icon:my_draw()
@@ -127,6 +142,10 @@ end
 
 function Icon:draw()
     Affectable.draw(self, self.my_draw)
+
+    if self.state == States.grab then
+        self.mouseIcon:draw()
+    end
 end
 
 return Icon

@@ -1,4 +1,5 @@
 local Button = require "scripts.button2"
+local MouseIcon = require "scripts.mouseIcon2"
 
 ---@class GameState.Menu : JM.Scene, GameState
 local State = _G.JM_Love2D_Package.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -16,10 +17,14 @@ local time_off
 
 ---@type JM.Font.Phrase|nil
 local phrase
+
+---@type MouseIcon2
+local mouse_icon
 --============================================================================
 State:implements {
     load = function()
         Button:load(_G.FONT_GUI)
+        MouseIcon:load()
     end,
     --
     --
@@ -68,6 +73,8 @@ State:implements {
                 "center")
             font:pop()
         end
+
+        mouse_icon = MouseIcon:new(State)
     end,
     --
     --
@@ -98,12 +105,16 @@ State:implements {
     --
     --
     update = function(dt)
+        mouse_icon:update(dt)
+
         time_off = time_off + dt
         if time_off <= 0.6 then
             return
         end
 
         local mx, my = State:get_mouse_position()
+
+        local one_bt_is_focused = false
 
         for i = 1, #buttons do
             ---@type Button
@@ -118,7 +129,13 @@ State:implements {
             end
 
             buttons[i]:update(dt)
+
+            if button.on_focus then
+                one_bt_is_focused = true
+            end
         end
+
+        mouse_icon:set_state(one_bt_is_focused and mouse_icon.States.point or mouse_icon.States.normal)
     end,
     --
     --
@@ -147,6 +164,8 @@ State:implements {
             phrase:draw(0, SCREEN_HEIGHT - 32, "center")
             phrase.__font:pop()
         end
+
+        mouse_icon:draw()
     end,
     --
 }
