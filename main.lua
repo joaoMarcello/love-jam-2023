@@ -31,8 +31,6 @@ SCREEN_WIDTH = Pack.Utils:round(SCREEN_HEIGHT * 1.5)
 ---@type GameState
 local scene
 
-local state_change = false
-
 ---@param new_state GameState
 function CHANGE_GAME_STATE(new_state, skip_finish, skip_load, save_prev, skip_collect, skip_fadein, skip_init)
     -- local p = scene and scene:init()
@@ -43,8 +41,6 @@ function CHANGE_GAME_STATE(new_state, skip_finish, skip_load, save_prev, skip_co
     r = (not skip_collect) and collectgarbage()
     scene = new_state
     r = not skip_fadein and scene:fadein(nil, nil, nil)
-
-    state_change = true
 end
 
 function RESTART(state)
@@ -94,11 +90,6 @@ local km = nil
 
 function love.update(dt)
     km = collectgarbage("count") / 1024.0
-
-    if state_change then
-        state_change = false
-        return
-    end
 
     if love.keyboard.isDown("escape")
         or (love.keyboard.isDown("lalt") and love.keyboard.isDown('f4'))

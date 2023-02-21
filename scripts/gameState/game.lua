@@ -7,6 +7,8 @@ local Panel = require "scripts.panel"
 local Timer = require "scripts.timer"
 local DisplayLvl = require "scripts.displayLevel"
 local DisplayValue = require "scripts.display_value"
+local Count = require "scripts.countdown"
+local Icon = require "scripts.mouseIcon"
 
 ---@class GameState.Game : JM.Scene, GameState
 local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT,
@@ -58,6 +60,12 @@ local gui_font
 local param
 
 local time_endgame
+
+---@type CountDown
+local countdown
+
+---@type MouseIcon
+local mouse_icon
 --=========================================================================
 
 function State:game_get_timer()
@@ -120,6 +128,8 @@ State:implements {
         Timer:load()
         DisplayLvl:load()
         DisplayValue:load()
+        Count:load()
+        Icon:load()
     end,
     --
     --
@@ -154,6 +164,10 @@ State:implements {
             format = "%d"
         })
 
+        countdown = Count:new({})
+
+        mouse_icon = Icon:new(State)
+
         time_endgame = 0
     end,
     --
@@ -163,6 +177,8 @@ State:implements {
         Timer:finish()
         DisplayLvl:finish()
         DisplayValue:finish()
+        Count:finish()
+        Icon:finish()
     end,
     --
     --
@@ -191,6 +207,12 @@ State:implements {
         local camera = State.camera
         camera:follow(panel.x, panel.y, 'panel')
         camera:update(dt)
+
+        countdown:update(dt)
+
+        mouse_icon:update(dt)
+
+        if not countdown:is_released() then return end
 
         -- local score = param['score']
         -- if score > param['hi_score'] then
@@ -270,6 +292,8 @@ State:implements {
                 end
 
                 panel:draw()
+
+                mouse_icon:draw()
             end
         },
         --
@@ -309,6 +333,10 @@ State:implements {
                     local h = obj:text_height(obj:get_lines(px))
 
                     obj:draw(px, py + ph / 2 - h / 2, "center")
+                end
+
+                if not countdown:is_released() then
+                    countdown:draw()
                 end
             end
         }

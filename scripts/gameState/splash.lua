@@ -224,7 +224,7 @@ State:implements({
                     and not State.fadeout_time
                 then
                     State:fadeout(0.7, nil, nil, nil, function()
-                        CHANGE_GAME_STATE(require 'scripts.gameState.game', nil, nil, nil, nil, nil)
+                        CHANGE_GAME_STATE(require 'scripts.gameState.menu', nil, nil, nil, nil, nil)
                     end)
                 end
             end

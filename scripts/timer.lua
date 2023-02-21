@@ -22,7 +22,7 @@ end
 
 ---@param state GameState.Game
 function Timer:__constructor__(state)
-    self.time_in_sec = 10 --60 * 1 + 30
+    self.time_in_sec = 60 * 1 + 30
     self.speed = 1.0
     self.acumulator = 0.0
 
