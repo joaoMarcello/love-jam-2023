@@ -9,6 +9,9 @@ love.graphics.setDefaultFilter("nearest", "nearest")
 collectgarbage("setstepmul", 300)
 collectgarbage("setpause", 200)
 
+---@type JM.Font.Font
+FONT_GUI = {}
+
 ---@class GameState: JM.Scene
 ---@field load function
 ---@field init function
@@ -28,6 +31,8 @@ SCREEN_WIDTH = Pack.Utils:round(SCREEN_HEIGHT * 1.5)
 ---@type GameState
 local scene
 
+local state_change = false
+
 ---@param new_state GameState
 function CHANGE_GAME_STATE(new_state, skip_finish, skip_load, save_prev, skip_collect, skip_fadein, skip_init)
     -- local p = scene and scene:init()
@@ -38,6 +43,8 @@ function CHANGE_GAME_STATE(new_state, skip_finish, skip_load, save_prev, skip_co
     r = (not skip_collect) and collectgarbage()
     scene = new_state
     r = not skip_fadein and scene:fadein(nil, nil, nil)
+
+    state_change = true
 end
 
 function RESTART(state)
@@ -56,7 +63,15 @@ function UNPAUSE(state)
 end
 
 function love.load()
-    CHANGE_GAME_STATE(require 'scripts.gameState.game', true, nil, nil, nil, nil, nil)
+    FONT_GUI = Pack.FontGenerator:new_by_ttf {
+        path = "/data/font/Retro Gaming.ttf",
+        dpi = 32,
+        name = "retro gaming",
+        font_size = 18,
+        character_space = 2
+    }
+
+    CHANGE_GAME_STATE(require 'scripts.gameState.menu', true, nil, nil, nil, nil, nil)
 end
 
 function love.keypressed(key)
@@ -79,6 +94,11 @@ local km = nil
 
 function love.update(dt)
     km = collectgarbage("count") / 1024.0
+
+    if state_change then
+        state_change = false
+        return
+    end
 
     if love.keyboard.isDown("escape")
         or (love.keyboard.isDown("lalt") and love.keyboard.isDown('f4'))

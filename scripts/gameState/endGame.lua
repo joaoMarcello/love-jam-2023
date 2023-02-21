@@ -42,19 +42,30 @@ State:implements {
 
         Button:load(gameState:game_get_gui_font())
 
-        buttons = {
-            Button:new(State, { x = (32 * 5), y = (32 * 11) }),
-            Button:new(State, { x = (32 * 12), y = (32 * 11), text = "Back to Menu" }),
-        }
-
-        local button
+        ---@type Button
+        local bt_play = Button:new(State, { x = (32 * 5), y = (32 * 11) })
 
         ---@type Button
-        button = buttons[1]
-        button:on_event("mouse_pressed", function(x, y, button)
-            if not buttons[1].pressed then
-                buttons[1].pressed = true
+        local bt_back = Button:new(State, {
+            x = (32 * 12), y = (32 * 11), text = "Back to Menu"
+        })
+
+        buttons = {
+            bt_play,
+            bt_back,
+        }
+
+        bt_play:on_event("mouse_pressed", function(x, y, button)
+            if not bt_play.pressed then
+                bt_play.pressed = true
                 CHANGE_GAME_STATE(gameState, true, true, false, false, false, false)
+            end
+        end)
+
+        bt_back:on_event("mouse_pressed", function(x, y, button)
+            if not bt_back.pressed then
+                bt_back.pressed = true
+                CHANGE_GAME_STATE(require "scripts.gameState.menu")
             end
         end)
 

@@ -111,13 +111,7 @@ State:implements {
     --
     --
     load = function()
-        gui_font = Generator:new_by_ttf {
-            path = "/data/font/Retro Gaming.ttf",
-            dpi = 32,
-            name = "retro gaming",
-            font_size = 18,
-            character_space = 2
-        }
+        gui_font = _G.FONT_GUI
 
         param = {}
         param['hi_score'] = 2000
