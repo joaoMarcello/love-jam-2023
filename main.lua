@@ -67,7 +67,7 @@ function love.load()
         character_space = 2
     }
 
-    CHANGE_GAME_STATE(require 'scripts.gameState.menu', true, nil, nil, nil, nil, nil)
+    CHANGE_GAME_STATE(require 'scripts.gameState.splash', true, nil, nil, nil, nil, nil)
 end
 
 function love.keypressed(key)

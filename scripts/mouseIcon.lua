@@ -76,7 +76,8 @@ function Icon:is_in_point_mode()
     if self.state == States.shock then return false end
 
     local panel = self.gamestate:game_get_panel()
-    if panel:is_complete()
+
+    if panel:is_complete() or panel:is_locked()
         or self.gamestate:game_get_timer():time_is_up()
     then
         return false
