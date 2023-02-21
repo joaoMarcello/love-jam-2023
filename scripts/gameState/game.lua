@@ -326,6 +326,28 @@ State:implements {
                 display_score:draw()
                 display_hi_score:draw()
                 display_shocks:draw()
+            end
+        },
+        --
+        --
+        {
+            name = "Mouse Icon",
+
+            draw = function(self, camera)
+                mouse_icon:draw()
+            end
+        },
+        --
+        --
+        {
+            name = "Time is up",
+            factor_x = -1,
+            factor_y = -1,
+
+            draw = function()
+                if not countdown:is_released() then
+                    countdown:draw()
+                end
 
                 if timer:time_is_up() then
                     local px, py, pw, ph = 32 * 5, panel.y + 32 * 5, 32 * 6, 32 * 3
@@ -341,19 +363,6 @@ State:implements {
 
                     obj:draw(px, py + ph / 2 - h / 2, "center")
                 end
-
-                if not countdown:is_released() then
-                    countdown:draw()
-                end
-            end
-        },
-        --
-        --
-        {
-            name = "Mouse Icon",
-
-            draw = function(self, camera)
-                mouse_icon:draw()
             end
         },
     }

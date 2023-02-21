@@ -179,7 +179,7 @@ State:implements {
                     if last_hi_score < score then
                         local px = 32 * 12
                         self.__hi_score = font:generate_phrase(
-                            "<font-size=12> <effect=ghost, speed=0.9, min=0.1> <color> NEW HI SCORE", px,
+                            "<font-size=12> <effect=ghost, speed=0.9, min=0.1> <color> <bold> NEW HI SCORE", px,
                             py + 32 * 5, math.huge, "left")
 
                         self.__hi_score:draw(px, py + 32 * 5, "left")

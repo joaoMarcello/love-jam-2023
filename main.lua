@@ -60,11 +60,12 @@ end
 
 function love.load()
     FONT_GUI = Pack.FontGenerator:new_by_ttf {
-        path = "/data/font/Retro Gaming.ttf",
+        path = "/data/font/Orbitron/Orbitron-Medium.ttf",
+        path_bold = "data/font/Orbitron/Orbitron-Bold.ttf",
         dpi = 32,
         name = "retro gaming",
         font_size = 18,
-        character_space = 2
+        character_space = 0
     }
 
     CHANGE_GAME_STATE(require 'scripts.gameState.splash', true, nil, nil, nil, nil, nil)
