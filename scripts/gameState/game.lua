@@ -198,6 +198,7 @@ State:implements {
 
         if not timer:time_is_up()
             and not panel:is_complete()
+            and not panel:is_locked()
             and key == "return"
         then
             CHANGE_GAME_STATE(require "scripts.gameState.pause", true, false, true, true, true, false)

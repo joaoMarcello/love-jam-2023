@@ -39,7 +39,7 @@ function Count:__constructor__(args)
     self.lock = true
     self.__release = false
 
-    local eff = self:apply_effect("popin", { delay = 0.4 })
+    local eff = self:apply_effect("popin", { delay = 0.9 })
     eff:set_final_action(function()
         self.lock = false
     end)

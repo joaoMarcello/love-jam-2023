@@ -96,7 +96,6 @@ function love.update(dt)
         or (love.keyboard.isDown("ralt") and love.keyboard.isDown('f4'))
     then
         scene:finish()
-        collectgarbage("collect")
         love.event.quit()
     end
 
@@ -107,11 +106,11 @@ end
 function love.draw()
     scene:draw()
 
-    love.graphics.setColor(0, 0, 0, 0.7)
-    love.graphics.rectangle("fill", 0, 0, 80, 120)
-    love.graphics.setColor(1, 1, 0, 1)
-    love.graphics.print(string.format("Memory:\n\t%.2f Mb", km), 5, 10)
-    love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 5, 50)
-    local maj, min, rev, code = love.getVersion()
-    love.graphics.print(string.format("Version:\n\t%d.%d.%d", maj, min, rev), 5, 75)
+    -- love.graphics.setColor(0, 0, 0, 0.7)
+    -- love.graphics.rectangle("fill", 0, 0, 80, 120)
+    -- love.graphics.setColor(1, 1, 0, 1)
+    -- love.graphics.print(string.format("Memory:\n\t%.2f Mb", km), 5, 10)
+    -- love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 5, 50)
+    -- local maj, min, rev, code = love.getVersion()
+    -- love.graphics.print(string.format("Version:\n\t%d.%d.%d", maj, min, rev), 5, 75)
 end
