@@ -71,6 +71,7 @@ function Count:update(dt)
         elseif self.time >= self.speed + 0.5 then
             if not self.__release then
                 self.__release = true
+                _G.PLAY_SONG("game")
             end
         end
     end

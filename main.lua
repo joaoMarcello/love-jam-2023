@@ -58,6 +58,14 @@ function UNPAUSE(state)
     CHANGE_GAME_STATE(state.prev_state, true, true, false, false, true, true)
 end
 
+function PLAY_SFX(name)
+    Pack.Sound:play_sfx(name)
+end
+
+function PLAY_SONG(name)
+    Pack.Sound:play_song(name)
+end
+
 function love.load()
     FONT_GUI = Pack.FontGenerator:new_by_ttf {
         path = "/data/font/Orbitron/Orbitron-Medium.ttf",
@@ -67,6 +75,14 @@ function love.load()
         font_size = 18,
         character_space = 0
     }
+
+    local Sound = _G.JM_Love2D_Package.Sound
+    Sound:add_sfx("/data/sfx/192277__lebaston100__click cutted .wav", "plug")
+    Sound:add_sfx("/data/sfx/657803__the-sacha-rush__electric-shock-2-hit.wav", "shock")
+    Sound:add_sfx("/data/sfx/264498__foolboymedia__tick-tock.wav", "tick tock")
+
+    Sound:add_song("/data/song/Justin-Mahar-Pumped.ogg", "title")
+    Sound:add_song("/data/song/Justin-Mahar-The-Grind.ogg", "game", 0.2)
 
     CHANGE_GAME_STATE(require 'scripts.gameState.splash', true, nil, nil, nil, nil, nil)
 end

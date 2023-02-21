@@ -75,6 +75,8 @@ State:implements {
         end
 
         mouse_icon = MouseIcon:new(State)
+
+        _G.PLAY_SONG("title")
     end,
     --
     --
@@ -82,6 +84,7 @@ State:implements {
         Button:finish()
         -- buttons = nil
         phrase = nil
+        local audio = _G.Pack.Sound:stop_all()
     end,
     --
     --

@@ -306,6 +306,7 @@ function Panel:mouse_pressed(x, y, button)
             local success = wire:try_plug(self.cur_socket)
 
             if not success then
+                _G.PLAY_SFX("shock")
                 wire:turn_inactive()
 
                 self:shake()
@@ -324,6 +325,8 @@ function Panel:mouse_pressed(x, y, button)
                 dispatch_event(self, Events.shock)
                 --
             elseif self:is_complete() then
+                _G.PLAY_SFX("plug")
+
                 dispatch_event(self, Events.complete)
                 local level = self.gamestate:game_get_display_level()
                 local bonus = (level:get_value() - 1) * 100
@@ -331,7 +334,10 @@ function Panel:mouse_pressed(x, y, button)
                 self.gamestate:game_increment_param("score", 500 + bonus)
                 --
             else
+                _G.PLAY_SFX("plug")
+
                 dispatch_event(self, Events.plug)
+
                 self.gamestate:game_increment_param("score", 50)
             end
 
