@@ -389,6 +389,7 @@ end
 function Wire:turn_inactive()
     if not self:is_plugged() and self.state ~= States.inactive then
         self.state = States.inactive
+        self.plug:unplug()
         return true
     end
     return false

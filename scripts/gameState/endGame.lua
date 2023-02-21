@@ -159,13 +159,22 @@ State:implements {
                     font:printf("<color, 0, 0, 0>Hi Score: " .. hi_score, px + 1, py + 32 * 5 + 1, "left", right)
 
                     font:printf(color1 .. "Hi Score: " .. color2 .. hi_score, px, py + 32 * 5, "left", right)
+
+                    if last_hi_score < score then
+                        local px = 32 * 12
+                        self.__hi_score = font:generate_phrase(
+                            "<font-size=12> <effect=ghost, speed=0.9, min=0.1> <color> NEW HI SCORE", px,
+                            py + 32 * 5, math.huge, "left")
+
+                        self.__hi_score:draw(px, py + 32 * 5, "left")
+                    end
                     --======================================================
 
                     local text = color1 .. "Score: " .. color2 .. score
-                    if last_hi_score < score then
-                        text = text ..
-                            " <font-size=12> <effect=ghost, speed = 0.9, min=0.1>   <color>\t NEW HI SCORE </color>"
-                    end
+                    -- if last_hi_score < score then
+                    --     text = text ..
+                    --         " <font-size=12> <effect=ghost, speed = 0.9, min=0.1>   <color>\t NEW HI SCORE </color>"
+                    -- end
 
                     font:printx("<color, 0, 0, 0>Score: " .. score, px + 1, py + 32 * 6.5 + 1, right, "left")
                     font:printx(text, px, py + 32 * 6.5, right, "left")

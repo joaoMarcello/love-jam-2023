@@ -38,6 +38,23 @@ function Icon:finish()
 
 end
 
+---@param state MouseIcon.States
+function Icon:set_state(state)
+    if self.state == state then return false end
+
+    self.state = state
+
+    if state == States.shock then
+        local eff = self:apply_effect("earthquake", { random = true, range_x = 5, range_y = 5, duration = 0.6 })
+
+        eff:set_final_action(function()
+            self:set_state(States.prepare)
+        end)
+    end
+
+    return true
+end
+
 function Icon:get_color_state()
     local Utils = _G.JM_Utils
 
@@ -52,10 +69,55 @@ function Icon:get_color_state()
     end
 end
 
+function Icon:is_in_point_mode()
+    if self.state == States.shock then return end
+
+    local panel = self.gamestate:game_get_panel()
+
+    for i = 1, panel.n_wires do
+        ---@type Game.Component.Wire
+        local wire = panel.wires_by_id[i]
+
+        if wire and wire.plug:is_been_pointed() then
+            return true
+        end
+    end
+
+    return false
+end
+
 function Icon:update(dt)
     Affectable.update(self, dt)
 
-    self.x, self.y = self.gamestate:get_mouse_position()
+    local mx, my = self.gamestate:get_mouse_position()
+
+    local panel = self.gamestate:game_get_panel()
+
+    if panel.selected_id then
+        self:set_state(States.grab)
+
+        ---@type Game.Component.Wire
+        local wire = panel.wires_by_last[panel.selected_id]
+
+        if wire then
+            self.x = wire.plug.x + 32 - 10
+            self.y = wire.plug.y - 10
+        end
+        --
+        --
+    elseif self.state == States.shock then
+        self.x, self.y = mx, my
+        --
+        --
+    elseif self:is_in_point_mode() then
+        self:set_state(States.point)
+        self.x, self.y = mx, my
+        --
+        --
+    else
+        self:set_state(States.prepare)
+        self.x, self.y = mx, my
+    end
 end
 
 function Icon:my_draw()

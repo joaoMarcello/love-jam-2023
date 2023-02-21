@@ -36,7 +36,7 @@ State.camera.constant_speed_x = 32 * 11
 ---@type Game.Component.Panel
 local panel
 
----@type Game.Component.Panel
+---@type Game.Component.Panel|any
 local prev_panel
 
 ---@type Game.Component.Timer
@@ -84,6 +84,10 @@ function State:game_get_gui_font()
     return gui_font
 end
 
+function State:game_get_mouse_icon()
+    return mouse_icon
+end
+
 ---@alias GameState.Game.Params "level"|"shocks"|"score"|"hi_score"|"last_hi_score"
 
 ---@param index GameState.Game.Params
@@ -122,7 +126,7 @@ State:implements {
         gui_font = _G.FONT_GUI
 
         param = {}
-        param['hi_score'] = 2000
+        param['hi_score'] = 100
 
         Panel:load()
         Timer:load()
@@ -141,6 +145,7 @@ State:implements {
         State:game_set_param("level", 0)
         State:game_set_param("last_hi_score", param['hi_score'])
 
+        prev_panel = nil
         panel = Panel:new(State, { x = 32 * 3 })
 
         timer = Timer:new(State)

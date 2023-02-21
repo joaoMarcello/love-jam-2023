@@ -78,7 +78,7 @@ function Plug:is_tracking()
 end
 
 function Plug:is_been_pointed()
-    if self:is_tracking() then return false end
+    if self:is_tracking() or self:is_plugged() then return false end
 
     local panel = self.panel
     local w = panel.w / 4
@@ -98,6 +98,14 @@ end
 
 function Plug:plug()
     self.y = self.piece.y + self.h / 2
+end
+
+function Plug:unplug()
+    self.piece.x = self.panel.x + (self.socket - 1) * 32
+    self.piece.y = self.panel.y + (32 * 6)
+
+    self.x = self.piece.x
+    self.y = self.piece.y
 end
 
 function Plug:update(dt)
@@ -145,8 +153,8 @@ function Plug:draw()
 
     Component.draw(self, self.my_draw)
 
-    local font = _G.FONT_GUI
-    font:print(self:is_been_pointed() and "true" or "false", self.x, self.y - 20)
+    -- local font = _G.FONT_GUI
+    -- font:print(self:is_been_pointed() and "true" or "false", self.x, self.y - 20)
 end
 
 return Plug

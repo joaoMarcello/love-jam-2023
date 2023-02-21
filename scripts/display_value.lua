@@ -14,7 +14,7 @@ function Display:new(state, args)
     args.display = args.display or "SCORE"
     args.x = 32 * 16
     args.y = args.y or (32 * 6)
-    args.format = args.format or "%07d"
+    args.format = args.format or "%d" --"%07d"
 
     local obj = Affectable:new()
     setmetatable(obj, self)

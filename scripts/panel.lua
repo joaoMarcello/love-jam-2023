@@ -306,9 +306,13 @@ function Panel:mouse_pressed(x, y, button)
             local success = wire:try_plug(self.cur_socket)
 
             if not success then
-                wire.state = Wire.States.inactive
+                wire:turn_inactive()
+
                 self:shake()
                 local timer = self.gamestate:game_get_timer()
+                local mouseIcon = self.gamestate:game_get_mouse_icon()
+
+                mouseIcon:set_state(mouseIcon.States.shock)
 
                 timer:decrement(5 + self.n_shocks)
                 timer:pause(0.2 * 6)
@@ -337,7 +341,9 @@ function Panel:mouse_pressed(x, y, button)
         return
     end
 
-    if x <= (self.x + self.w) and x >= self.x then
+    if x <= (self.x + self.w) and x >= self.x
+        and y >= (self.y + 32 * 6) and y <= (self.y + 32 * 7)
+    then
         local wire = self:selected_wire()
 
         if wire then
