@@ -27,6 +27,10 @@ end
 function Icon:__constructor__(state, args)
     self.gamestate = state
 
+    local mx, my = self.gamestate:get_mouse_position()
+    self.x, self.y = mx, my
+    self.mx, self.my = self.x, self.y
+
     self:set_state(States.normal)
 end
 
@@ -43,11 +47,36 @@ function Icon:set_state(state)
     self.state = state
 end
 
+function Icon:stay_on_bounds()
+    local camera = self.gamestate.camera
+
+    if self.y < 0 then self.y = 0 end
+    if self.y > SCREEN_HEIGHT then self.y = SCREEN_HEIGHT end
+    if self.x < camera.x then self.x = camera.x end
+    if self.x > camera.x + SCREEN_WIDTH then
+        self.x = camera.x + SCREEN_WIDTH
+    end
+end
+
+function Icon:mouse_moved(x, y, dx, dy)
+    local camera = self.gamestate.camera
+    local scale = camera.desired_scale
+    dx = dx / scale
+    dy = dy / scale
+
+    self.x, self.y = self.x + dx, self.y + dy
+
+    self:stay_on_bounds()
+end
+
 function Icon:update(dt)
     Component.update(self, dt)
 
-    local mx, my = self.gamestate:get_mouse_position()
-    self.x, self.y = mx, my
+    -- local mx, my = self.gamestate:get_mouse_position()
+    -- local dx, dy = mx - self.mx, my - self.my
+    -- self.mx, self.my = mx, my
+
+    -- self.x, self.y = self.x + dx, self.y + dy
 end
 
 function Icon:my_draw()

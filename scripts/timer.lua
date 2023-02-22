@@ -1,6 +1,9 @@
 local Affectable = _G.JM_Affectable
 local Font = _G.JM_Font
 
+local color_white = _G.JM_Utils:get_rgba(1, 1, 1, 1)
+local color_yellow = _G.JM_Utils:get_rgba(1, 1, 0, 1)
+
 local string_format = string.format
 local math_floor = math.floor
 
@@ -22,7 +25,7 @@ end
 
 ---@param state GameState.Game
 function Timer:__constructor__(state)
-    self.time_in_sec = 30 --60 * 1 + 30
+    self.time_in_sec = 60 * 1 + 30
     self.speed = 1.0
     self.acumulator = 0.0
 
@@ -154,7 +157,7 @@ function Timer:my_draw()
     local min, sec, dec = self:get_time2()
 
     font:push()
-    font:set_color(_G.JM_Utils:get_rgba(1, 1, 0, 1))
+    font:set_color(color_yellow)
     -- font:set_font_size(28)
     local sm = string_format("%02d:%02d:%02d", min, sec, dec)
     font:print(sm, self.x + 16, self.y + 32)
@@ -165,7 +168,7 @@ function Timer:draw()
     Affectable.draw(self, self.my_draw)
 
     font:push()
-    font:set_color(_G.JM_Utils:get_rgba(1, 1, 1, 1))
+    font:set_color(color_white)
     font:set_font_size(font.__font_size - 6)
     font:print("TIME",
         self.x,

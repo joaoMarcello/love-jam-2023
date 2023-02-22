@@ -42,6 +42,7 @@ function Count:__constructor__(args)
     local eff = self:apply_effect("popin", { delay = 0.9 })
     eff:set_final_action(function()
         self.lock = false
+        PLAY_SFX("countdown")
     end)
 end
 
@@ -67,11 +68,17 @@ function Count:update(dt)
             self.time = self.time - self.speed
             self.current = self.current + 1
             self:apply_effect("popin")
+
+            if self.current ~= 4 then
+                PLAY_SFX("countdown")
+            else
+                PLAY_SFX('shoot')
+            end
             --
         elseif self.time >= self.speed + 0.5 then
             if not self.__release then
                 self.__release = true
-                _G.PLAY_SONG("game")
+                -- _G.PLAY_SONG("game")
             end
         end
     end

@@ -25,6 +25,12 @@ end
 function Icon:__constructor__(state, args)
     self.gamestate = state
     self.x, self.y = state:get_mouse_position()
+
+    self.mx, self.my = self.x, self.y
+
+    self.dx = 0
+    self.dy = 0
+
     self.w = 16
     self.h = 16
 
@@ -45,6 +51,7 @@ end
 function Icon:set_state(state)
     if self.state == state then return false end
 
+    local last = self.state
     self.state = state
 
     if state == States.shock then
@@ -53,6 +60,14 @@ function Icon:set_state(state)
         eff:set_final_action(function()
             self:set_state(States.prepare)
         end)
+    elseif state == States.grab then
+        self.mouseIcon.x = self.x
+        self.mouseIcon.y = self.y + self.h + 32
+    elseif state == States.prepare then
+        if last ~= States.shock and last ~= States.point then
+            self.x = self.mouseIcon.x
+            self.y = self.mouseIcon.y - 32
+        end
     end
 
     return true
@@ -95,16 +110,34 @@ function Icon:is_in_point_mode()
     return false
 end
 
+function Icon:mouse_moved(x, y, dx, dy)
+    local camera = self.gamestate.camera
+
+    -- local mx, my = self.gamestate:get_mouse_position()
+    -- self.dx, self.dy = mx - self.mx, my - self.my
+    -- self.mx, self.my = mx, my
+
+    self.dx = (dx / camera.desired_scale)
+    self.dy = (dy / camera.desired_scale)
+
+    self.x, self.y = self.x + self.dx, self.y + self.dy
+    if self.x < camera.x then self.x = camera.x end
+    if self.y < 0 then self.y = 0 end
+    if self.y + self.h > SCREEN_HEIGHT then self.y = SCREEN_HEIGHT - self.h end
+    local right = camera.x + 32 * 15
+    if self.x + self.w > right then
+        self.x = right - self.w
+    end
+    self.mouseIcon:mouse_moved(x, y, dx, dy)
+end
+
 function Icon:update(dt)
     Affectable.update(self, dt)
 
-    local mx, my = self.gamestate:get_mouse_position()
 
     local panel = self.gamestate:game_get_panel()
 
     if panel.selected_id then
-        self:set_state(States.grab)
-
         ---@type Game.Component.Wire
         local wire = panel.wires_by_last[panel.selected_id]
 
@@ -112,20 +145,28 @@ function Icon:update(dt)
             self.x = wire.plug.x + 32 - 10
             self.y = wire.plug.y - 10
         end
+
+        self:set_state(States.grab)
+
         --
         --
     elseif self.state == States.shock then
-        self.x, self.y = mx, my
+        -- self.x, self.y = self.x + self.dx, self.y + self.dy
+        -- if self.x < camera.x then self.x = camera.x end
         --
         --
     elseif self:is_in_point_mode() then
         self:set_state(States.point)
-        self.x, self.y = mx, my
+
+        -- self.x, self.y = self.x + self.dx, self.y + self.dy
+        -- if self.x < camera.x then self.x = camera.x end
         --
         --
     else
         self:set_state(States.prepare)
-        self.x, self.y = mx, my
+
+        -- self.x, self.y = self.x + self.dx, self.y + self.dy
+        -- if self.x < camera.x then self.x = camera.x end
     end
 
     self.mouseIcon:update(dt)

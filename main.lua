@@ -4,7 +4,8 @@ Pack = require "jm-love2d-package.init"
 math.randomseed(os.time())
 love.graphics.setBackgroundColor(0, 0, 0, 1)
 love.graphics.setDefaultFilter("nearest", "nearest")
-love.mouse.setVisible(false)
+love.mouse.setVisible(true)
+love.mouse.setRelativeMode(true)
 
 collectgarbage("setstepmul", 300)
 collectgarbage("setpause", 200)
@@ -67,6 +68,7 @@ function PLAY_SONG(name)
 end
 
 function love.load()
+    --
     FONT_GUI = Pack.FontGenerator:new_by_ttf {
         path = "/data/font/Orbitron/Orbitron-Medium.ttf",
         path_bold = "data/font/Orbitron/Orbitron-Bold.ttf",
@@ -80,11 +82,13 @@ function love.load()
     Sound:add_sfx("/data/sfx/192277__lebaston100__click cutted .wav", "plug")
     Sound:add_sfx("/data/sfx/657803__the-sacha-rush__electric-shock-2-hit.wav", "shock")
     Sound:add_sfx("/data/sfx/264498__foolboymedia__tick-tock.wav", "tick tock")
+    Sound:add_sfx("/data/sfx/153140__argos22__bip_book-checked.wav", "countdown")
+    Sound:add_sfx("/data/sfx/52593_michel-hollicardo_gun_shoot_cutted.ogg", "shoot", 0.1)
 
     Sound:add_song("/data/song/Justin-Mahar-Pumped.ogg", "title")
-    Sound:add_song("/data/song/Justin-Mahar-The-Grind.ogg", "game", 0.2)
+    -- Sound:add_song("/data/song/Justin-Mahar-The-Grind.ogg", "game", 0.2)
 
-    CHANGE_GAME_STATE(require 'scripts.gameState.splash', true, nil, nil, nil, nil, nil)
+    CHANGE_GAME_STATE(require 'scripts.gameState.game', true, nil, nil, nil, nil, nil)
 end
 
 function love.keypressed(key)
@@ -101,6 +105,10 @@ end
 
 function love.mousereleased(x, y, button, istouch, presses)
     scene:mousereleased(x, y, button, istouch, presses)
+end
+
+function love.mousemoved(x, y, dx, dy, istouch)
+    scene:mousemoved(x, y, dx, dy, istouch)
 end
 
 local km = nil

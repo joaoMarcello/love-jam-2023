@@ -134,8 +134,6 @@ State:implements {
         DisplayValue:load()
         Count:load()
         Icon:load()
-
-        love.mouse.setVisible(false)
     end,
     --
     --
@@ -208,6 +206,11 @@ State:implements {
     --
     mousepressed = function(x, y, button)
         panel:mouse_pressed(x, y, button)
+    end,
+    --
+    --
+    mousemoved = function(x, y, dx, dy, istouch)
+        mouse_icon:mouse_moved(x, y, dx, dy)
     end,
     --
     --

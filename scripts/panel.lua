@@ -347,6 +347,10 @@ function Panel:mouse_pressed(x, y, button)
         return
     end
 
+    local mouseIcon = self.gamestate:game_get_mouse_icon()
+    x = mouseIcon.x
+    y = mouseIcon.y
+
     if x <= (self.x + self.w) and x >= self.x
         and y >= (self.y + 32 * 6) and y <= (self.y + 32 * 7)
     then
@@ -373,6 +377,10 @@ function Panel:update(dt)
     end
 
     local mx, my = self.gamestate:get_mouse_position()
+
+
+    local mouseIcon2 = self.gamestate:game_get_mouse_icon().mouseIcon
+    mx, my = mouseIcon2.x, mouseIcon2.y
 
     if mx <= self.x + self.w and mx >= self.x
         and my >= (self.y + self.h - 32 * 1.5)

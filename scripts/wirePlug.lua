@@ -82,7 +82,8 @@ function Plug:is_been_pointed()
 
     local panel = self.panel
     local w = panel.w / 4
-    local mx, my = self.gamestate:get_mouse_position()
+    local mouseIcon = self.gamestate:game_get_mouse_icon()
+    local mx, my = mouseIcon.x, mouseIcon.y --self.gamestate:get_mouse_position()
 
     local c = check_collision(
         panel.x + (self.wire.socket_id - 1) * w, self.y, w, self.h,
