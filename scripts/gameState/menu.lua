@@ -75,6 +75,8 @@ State:implements {
         end
 
         mouse_icon = MouseIcon:new(State)
+        mouse_icon.x = 32 * 16
+        mouse_icon.y = 32 * 7
 
         _G.PLAY_SONG("title")
     end,
@@ -98,12 +100,19 @@ State:implements {
     --
     --
     mousepressed = function(x, y, button)
+        x, y = mouse_icon.x, mouse_icon.y
+
         for i = 1, #buttons do
             ---@type Button
             local bt = buttons[i]
 
             bt:mouse_pressed(x, y, button)
         end
+    end,
+    --
+    --
+    mousemoved = function(x, y, dx, dy, istouch)
+        mouse_icon:mouse_moved(x, y, dx, dy)
     end,
     --
     --
@@ -115,7 +124,7 @@ State:implements {
             return
         end
 
-        local mx, my = State:get_mouse_position()
+        local mx, my = mouse_icon.x, mouse_icon.y
 
         local one_bt_is_focused = false
 

@@ -24,9 +24,8 @@ end
 ---@param state GameState.Game
 function Icon:__constructor__(state, args)
     self.gamestate = state
-    self.x, self.y = state:get_mouse_position()
 
-    self.mx, self.my = self.x, self.y
+    self.x, self.y = state:get_mouse_position()
 
     self.dx = 0
     self.dy = 0

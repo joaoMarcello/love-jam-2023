@@ -172,6 +172,8 @@ State:implements {
         countdown = Count:new({})
 
         mouse_icon = Icon:new(State)
+        mouse_icon.x = 32 * 10
+        mouse_icon.y = 32 * 11
 
         time_endgame = 0
     end,
@@ -276,7 +278,7 @@ State:implements {
 
             display_level:increment()
             if display_level:get_value() % 2 == 1 then
-                timer:increment(15)
+                timer:increment(10)
             end
         end
 
