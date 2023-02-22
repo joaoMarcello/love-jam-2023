@@ -7,6 +7,7 @@ local font
 local Button = setmetatable({}, GUI_GC)
 Button.__index = Button
 
+---@return Button
 function Button:new(state, args)
     args = args or {}
 

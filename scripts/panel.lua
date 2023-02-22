@@ -379,7 +379,7 @@ function Panel:update(dt)
         self.time_bip = self.time_bip + dt
         if self.gamestate:game_get_panel() == self then
             if self.time_bip >= 0.6 then
-                PLAY_SFX('countdown')
+                PLAY_SFX('countdown', true)
                 self.time_bip = self.time_bip - 0.6
             end
         end

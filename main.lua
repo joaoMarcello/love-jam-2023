@@ -59,8 +59,8 @@ function UNPAUSE(state)
     CHANGE_GAME_STATE(state.prev_state, true, true, false, false, true, true)
 end
 
-function PLAY_SFX(name)
-    Pack.Sound:play_sfx(name)
+function PLAY_SFX(name, force)
+    Pack.Sound:play_sfx(name, force)
 end
 
 function PLAY_SONG(name)
@@ -82,13 +82,13 @@ function love.load()
     Sound:add_sfx("/data/sfx/192277__lebaston100__click cutted .wav", "plug")
     Sound:add_sfx("/data/sfx/657803__the-sacha-rush__electric-shock-2-hit.wav", "shock")
     Sound:add_sfx("/data/sfx/264498__foolboymedia__tick-tock.wav", "tick tock")
-    Sound:add_sfx("/data/sfx/153140__argos22__bip_book-checked.wav", "countdown")
+    Sound:add_sfx("/data/sfx/31780__slanesh__bip-cutted.ogg", "countdown")
     Sound:add_sfx("/data/sfx/52593_michel-hollicardo_gun_shoot_cutted.ogg", "shoot", 0.1)
 
     Sound:add_song("/data/song/Justin-Mahar-Pumped.ogg", "title")
     -- Sound:add_song("/data/song/Justin-Mahar-The-Grind.ogg", "game", 0.2)
 
-    CHANGE_GAME_STATE(require 'scripts.gameState.game', true, nil, nil, nil, nil, nil)
+    CHANGE_GAME_STATE(require 'scripts.gameState.menu', true, nil, nil, nil, nil, nil)
 end
 
 function love.keypressed(key)

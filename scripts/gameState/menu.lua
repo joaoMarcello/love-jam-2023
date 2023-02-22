@@ -20,6 +20,7 @@ local phrase
 
 ---@type MouseIcon2
 local mouse_icon
+
 --============================================================================
 State:implements {
     load = function()
@@ -48,7 +49,7 @@ State:implements {
         --==========================================================
 
         bt_start:on_event("mouse_pressed", function(x, y, button)
-            CHANGE_GAME_STATE(require "scripts.gameState.game")
+            CHANGE_GAME_STATE(require "scripts.gameState.howToPlay")
         end)
 
         bt_quit:on_event("mouse_pressed", function(x, y, button)

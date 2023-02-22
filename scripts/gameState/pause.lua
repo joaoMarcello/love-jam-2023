@@ -76,8 +76,9 @@ State:implements {
         local game = require 'scripts.gameState.game'
 
         mouse_icon = MouseIcon:new(State)
-        mouse_icon.x = game:game_get_mouse_icon().x
-        mouse_icon.y = game:game_get_mouse_icon().y
+
+        mouse_icon.x = resume.x + resume.w + 32
+        mouse_icon.y = resume.y - 16
     end,
 
     finish = function()
