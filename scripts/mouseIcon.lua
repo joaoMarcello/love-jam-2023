@@ -65,14 +65,23 @@ function Icon:set_state(state)
         self.mouseIcon.x = self.x
         self.mouseIcon.y = self.y + self.h + 32
         --
+    elseif state == States.point then
+        self.x = self.mouseIcon.x
+
+        self.y = self.mouseIcon.y
+        --
     elseif state == States.prepare then
-        if last ~= States.shock and last ~= States.point then
+        if last ~= States.shock and (last ~= States.point) then
+            local panel = self.gamestate:game_get_panel()
+
             self.x = self.mouseIcon.x
 
-            if self.mouseIcon.y > 32 * 10 then
+            self.y = self.mouseIcon.y
+
+            if self.mouseIcon.y > panel.y + panel.h - 64 then
                 self.y = self.mouseIcon.y - 32
             else
-                self.y = self.mouseIcon.y - self.h / 2
+                -- self.y = self.mouseIcon.y - self.h / 2
             end
 
             if self:is_in_point_mode() then
@@ -188,6 +197,10 @@ function Icon:update(dt)
         -- if self.x < camera.x then self.x = camera.x end
     end
 
+    if self.state ~= States.grab then
+        self.mouseIcon.x = self.x
+        self.mouseIcon.y = self.y
+    end
     self.mouseIcon:update(dt)
     if panel.cur_socket then
         self.mouseIcon:set_state(self.mouseIcon.States.point)
@@ -204,7 +217,7 @@ end
 function Icon:draw()
     Affectable.draw(self, self.my_draw)
 
-    if self.state == States.grab then
+    if self.state == States.grab or true then
         self.mouseIcon:draw()
     end
 end

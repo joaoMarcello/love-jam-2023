@@ -87,7 +87,8 @@ function Icon:my_draw()
         love.graphics.setColor(1, 0, 0)
     end
 
-    love.graphics.circle("fill", self.x, self.y, self.w)
+    -- love.graphics.circle("fill", self.x, self.y, self.w)
+    love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
 end
 
 function Icon:draw()

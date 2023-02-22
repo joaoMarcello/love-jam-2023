@@ -330,7 +330,10 @@ function Panel:mouse_pressed(x, y, button)
                 timer:pause(0.2 * 6)
 
                 if not timer:time_is_up() then
-                    PLAY_SFX("tick tock")
+                    PLAY_SFX("tick tock", true)
+                else
+                    local audio = _G.JM_Love2D_Package.Sound:get_sfx('tick tock')
+                    if audio then audio.source:stop() end
                 end
 
                 self.n_shocks = self.n_shocks + 1
@@ -368,7 +371,7 @@ function Panel:mouse_pressed(x, y, button)
     y = mouseIcon.y
 
     if x <= (self.x + self.w) and x >= self.x
-        and y >= (self.y + 32 * 6) and y <= (self.y + 32 * 7)
+        and y >= (self.y + 32 * 6 - 16) and y <= (self.y + 32 * 7)
     then
         local wire = self:selected_wire()
 
