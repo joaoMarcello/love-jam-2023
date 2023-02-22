@@ -66,6 +66,7 @@ local countdown
 
 ---@type MouseIcon
 local mouse_icon
+
 --=========================================================================
 
 function State:game_get_timer()
@@ -125,8 +126,14 @@ State:implements {
     load = function()
         gui_font = _G.FONT_GUI
 
+        local success, result = pcall(function()
+            return love.filesystem.load('save.lua')
+        end)
+
+        local hi_score = success and result and result() or 200
+
         param = {}
-        param['hi_score'] = 100
+        param['hi_score'] = hi_score
 
         Panel:load()
         Timer:load()
@@ -246,7 +253,12 @@ State:implements {
 
                 if score > hi_score then
                     param['hi_score'] = score
+
+                    local success, result = pcall(function()
+                        love.filesystem.write('save.lua', 'return ' .. score)
+                    end)
                 end
+
                 State:game_set_param("level", display_level:get_value())
                 -- State:game_set_param("hi_score", param['score'])
                 -- State:init()

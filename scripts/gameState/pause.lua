@@ -155,7 +155,7 @@ State:implements {
                     love.graphics.pop()
                 end
 
-                love.graphics.setColor(1, 1, 1, 0.8)
+                love.graphics.setColor(0.9, 0.9, 0.9, 0.9)
                 love.graphics.rectangle("fill", 0, 0, SCREEN_WIDTH,
                     SCREEN_HEIGHT)
 
@@ -190,7 +190,8 @@ State:implements {
         local Font = FONT_GUI
         Font:push()
         Font:set_font_size(32)
-        Font:printx("<color, 0.1, 0.1, 0.1>PAUSED", 0, 32 * 3, SCREEN_WIDTH, "center")
+        Font:printx("<color, 0.1, 0.1, 0.1> PAUSED", 0, 32 * 3, SCREEN_WIDTH,
+            "center")
         -- Font:set_font_size(12)
         -- Font:printx("<color, 1, 1, 1>Press ESC if you want to quit", 0, 32 * 5, SCREEN_WIDTH, "center")
         Font:pop()
