@@ -76,8 +76,8 @@ State:implements {
         time_off = 0.0
 
         mouse_icon = MouseIcon:new(State)
-        mouse_icon.x = 32 * 16
-        mouse_icon.y = 32 * 9
+        mouse_icon.x = bt_play.x - 32
+        mouse_icon.y = bt_play.y
     end,
     --
     --
