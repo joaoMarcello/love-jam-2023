@@ -51,7 +51,7 @@ State:implements {
 
         local objective_text_py = objective_py + ph + 3
         local objective_text, pw, ph = font:generate_phrase(
-            "- Connect all the <bold>plugs</bold> in the appropriated <bold>socket</effect></bold no-space>.",
+            "- Watch the <bold>lamp's color</bold> at the top of the screen and connect all the <bold>plugs</bold> in the appropriated <bold>socket</effect></bold no-space>.",
             64,
             16 + ph + font.__line_space,
             SCREEN_WIDTH, "left"
@@ -64,7 +64,7 @@ State:implements {
 
         local control_text_py = control_py + ph + 3
         local control_text = font:generate_phrase(
-            "- Move the glove with mouse.\n - Press the mouse's left button to grab a plug. \n - Release the plug pressing the mouse's right button.",
+            "- Move the <bold>glove</bold> with mouse.\n - Press the mouse's left button to grab a plug. \n - Release the plug pressing the mouse's right button.",
             64, control_text_py, SCREEN_WIDTH,
             "left")
 

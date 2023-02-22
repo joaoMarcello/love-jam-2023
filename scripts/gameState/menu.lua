@@ -85,7 +85,7 @@ State:implements {
     --
     finish = function()
         Button:finish()
-        -- buttons = nil
+        buttons = nil
         phrase = nil
         local audio = _G.Pack.Sound:stop_all()
     end,
@@ -108,6 +108,8 @@ State:implements {
             local bt = buttons[i]
 
             bt:mouse_pressed(x, y, button)
+
+            if not buttons then break end
         end
     end,
     --
