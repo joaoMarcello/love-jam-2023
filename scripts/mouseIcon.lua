@@ -59,13 +59,25 @@ function Icon:set_state(state)
         eff:set_final_action(function()
             self:set_state(States.prepare)
         end)
+        --
+        --
     elseif state == States.grab then
         self.mouseIcon.x = self.x
         self.mouseIcon.y = self.y + self.h + 32
+        --
     elseif state == States.prepare then
         if last ~= States.shock and last ~= States.point then
             self.x = self.mouseIcon.x
-            self.y = self.mouseIcon.y - 32
+
+            if self.mouseIcon.y > 32 * 10 then
+                self.y = self.mouseIcon.y - 32
+            else
+                self.y = self.mouseIcon.y - self.h / 2
+            end
+
+            if self:is_in_point_mode() then
+                self:set_state(States.point)
+            end
         end
     end
 
@@ -155,7 +167,6 @@ function Icon:update(dt)
         end
 
         self:set_state(States.grab)
-
         --
         --
     elseif self.state == States.shock then

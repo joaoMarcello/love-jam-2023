@@ -112,6 +112,7 @@ function Panel:__constructor__(state, args)
     self.selected_id = nil
 
     self.complete_time = 0.0
+    self.time_bip = 0.0
 
     local font = state:game_get_gui_font()
     self.phrase = font:generate_phrase("<color, 1, 1, 0> <effect=flickering, speed=0.3> COMPLETE",
@@ -325,7 +326,8 @@ function Panel:mouse_pressed(x, y, button)
                 dispatch_event(self, Events.shock)
                 --
             elseif self:is_complete() then
-                _G.PLAY_SFX("plug")
+                PLAY_SFX("plug")
+                PLAY_SFX('countdown')
 
                 dispatch_event(self, Events.complete)
                 local level = self.gamestate:game_get_display_level()
@@ -374,6 +376,13 @@ function Panel:update(dt)
 
     if self:is_complete() then
         self.complete_time = self.complete_time + dt
+        self.time_bip = self.time_bip + dt
+        if self.gamestate:game_get_panel() == self then
+            if self.time_bip >= 0.6 then
+                PLAY_SFX('countdown')
+                self.time_bip = self.time_bip - 0.6
+            end
+        end
     end
 
     local mx, my = self.gamestate:get_mouse_position()
@@ -383,7 +392,7 @@ function Panel:update(dt)
     mx, my = mouseIcon2.x, mouseIcon2.y
 
     if mx <= self.x + self.w and mx >= self.x
-        and my >= (self.y + self.h - 32 * 1.5)
+        and my >= (self.y + self.h - 32 * 1.8)
     then
         self.cur_socket = math.floor((mx - self.x) / (self.w / 4)) + 1
         self.cur_socket = Utils:clamp(self.cur_socket, 1, 4)

@@ -264,7 +264,7 @@ State:implements {
         display_shocks:update(dt)
 
         if panel:is_complete()
-            and panel.complete_time >= 2.0
+            and panel.complete_time >= (0.6 * 3 + 0.3)
             and not timer:time_is_up()
         then
             prev_panel = panel
