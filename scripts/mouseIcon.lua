@@ -110,17 +110,9 @@ function Icon:is_in_point_mode()
     return false
 end
 
-function Icon:mouse_moved(x, y, dx, dy)
+function Icon:stay_on_bounds()
     local camera = self.gamestate.camera
 
-    -- local mx, my = self.gamestate:get_mouse_position()
-    -- self.dx, self.dy = mx - self.mx, my - self.my
-    -- self.mx, self.my = mx, my
-
-    self.dx = (dx / camera.desired_scale)
-    self.dy = (dy / camera.desired_scale)
-
-    self.x, self.y = self.x + self.dx, self.y + self.dy
     if self.x < camera.x then self.x = camera.x end
     if self.y < 0 then self.y = 0 end
     if self.y + self.h > SCREEN_HEIGHT then self.y = SCREEN_HEIGHT - self.h end
@@ -128,12 +120,29 @@ function Icon:mouse_moved(x, y, dx, dy)
     if self.x + self.w > right then
         self.x = right - self.w
     end
+end
+
+function Icon:mouse_moved(x, y, dx, dy)
+    local camera = self.gamestate.camera
+
+    self.dx = (dx / camera.desired_scale)
+    self.dy = (dy / camera.desired_scale)
+
+    self.x, self.y = self.x + self.dx, self.y + self.dy
+
+    self:stay_on_bounds()
+
     self.mouseIcon:mouse_moved(x, y, dx, dy)
 end
 
 function Icon:update(dt)
     Affectable.update(self, dt)
 
+    local camera = self.gamestate.camera
+    if camera.dx ~= 0 then
+        self.x = self.x + camera.dx
+        self:stay_on_bounds()
+    end
 
     local panel = self.gamestate:game_get_panel()
 

@@ -27,11 +27,11 @@ State.camera:toggle_world_bounds()
 State.camera.border_color = { 0, 0, 0, 0 }
 
 State.camera:set_focus_x(32 * 3 * State.camera.desired_scale)
--- State.camera.max_speed_x = 32 * 11
--- State.camera.default_initial_speed_x = 1
--- State.camera.acc_x = 32 * 4
+-- State.camera.max_speed_x = 32 * 22
+-- State.camera.default_initial_speed_x = 32 * 4
+-- State.camera.acc_x = 32 * 16
 
-State.camera.constant_speed_x = 32 * 11
+State.camera.constant_speed_x = 32 * 11 * 2
 --============================================================================
 ---@type Game.Component.Panel
 local panel
@@ -216,8 +216,8 @@ State:implements {
     --
     update = function(dt, camera)
         local camera = State.camera
+
         camera:follow(panel.x, panel.y, 'panel')
-        camera:update(dt)
 
         countdown:update(dt)
 
@@ -329,6 +329,9 @@ State:implements {
                 display_score:draw()
                 display_hi_score:draw()
                 display_shocks:draw()
+
+                -- local font = _G.FONT_GUI
+                -- font:print('<color, 1, 1, 1>' .. tostring(State.camera.dx), 32, 32)
             end
         },
         --
