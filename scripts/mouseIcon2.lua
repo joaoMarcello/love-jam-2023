@@ -11,6 +11,7 @@ local Icon = setmetatable({}, Component)
 Icon.__index = Icon
 Icon.States = States
 
+---@param state GameState
 ---@return MouseIcon2
 function Icon:new(state, args)
     args = args or {}
