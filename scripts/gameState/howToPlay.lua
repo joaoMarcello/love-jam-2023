@@ -42,7 +42,8 @@ State:implements {
 
         local font = FONT_GUI
         local pw, ph
-        local how_to, pw, ph = font:generate_phrase("<bold> <color>HOW TO PLAY", 0, 0, SCREEN_WIDTH, "center")
+        local how_to, pw, ph = font:generate_phrase("<bold> <color> <effect=ghost, min=0.2, speed=1.3>HOW TO PLAY", 0, 0,
+            SCREEN_WIDTH, "center")
 
         local objective_py = 16 + ph + 3
         local objective, pw, ph = font:generate_phrase(
@@ -64,7 +65,7 @@ State:implements {
 
         local control_text_py = control_py + ph + 3
         local control_text = font:generate_phrase(
-            "- Move the <bold>glove</bold> with mouse.\n - Press the mouse's left button to grab a plug. \n - Release the plug pressing the mouse's right button.",
+            "- Move the <bold>glove</bold> with mouse.\n - Click the mouse's left button to grab a plug (click again to connect it to a socket). \n - Release the plug pressing the mouse's right button.",
             64, control_text_py, SCREEN_WIDTH,
             "left")
 

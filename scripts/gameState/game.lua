@@ -317,7 +317,6 @@ State:implements {
                 end
 
                 panel:draw()
-                -- mouse_icon:draw()
             end
         },
         --

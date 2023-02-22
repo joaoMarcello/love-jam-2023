@@ -148,8 +148,14 @@ function Timer:update(dt)
     end
 
     if not self.__lock and not panel:is_locked() then
+        -- self.last_time = math.floor(self.time_in_sec)
+
         self.time_in_sec = self.time_in_sec - dt
         if self.time_in_sec < 0 then self.time_in_sec = 0 end
+
+        -- if self.last_time ~= math.floor(self.time_in_sec) then
+
+        -- end
     end
 end
 

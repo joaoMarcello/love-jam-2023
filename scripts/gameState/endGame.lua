@@ -117,7 +117,7 @@ State:implements {
         mouse_icon:update(dt)
 
         time_off = time_off + dt
-        if time_off <= 1.0 then return end
+        if time_off <= 0.2 then return end
 
         local mx, my = mouse_icon.x, mouse_icon.y
 

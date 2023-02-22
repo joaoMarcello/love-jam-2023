@@ -76,8 +76,8 @@ State:implements {
         end
 
         mouse_icon = MouseIcon:new(State)
-        mouse_icon.x = 32 * 16
-        mouse_icon.y = 32 * 7
+        mouse_icon.x = bt_start.x + bt_start.w + 16
+        mouse_icon.y = bt_start.y
 
         _G.PLAY_SONG("title")
     end,
@@ -123,7 +123,7 @@ State:implements {
         mouse_icon:update(dt)
 
         time_off = time_off + dt
-        if time_off <= 0.6 then
+        if time_off < 0.3 then
             return
         end
 

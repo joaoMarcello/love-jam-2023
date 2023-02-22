@@ -1,6 +1,7 @@
 local Utils = _G.JM_Utils
 local Component = require "scripts.component"
 local Wire = require "scripts.wire"
+local Arrow = require "scripts.arrow"
 
 ---@enum Game.Component.Panel.Colors
 local Colors = {
@@ -32,7 +33,6 @@ local Panel = setmetatable({}, Component)
 Panel.__index = Panel
 Panel.Colors = Colors
 
----@param state GameState
 ---@return Game.Component.Panel
 function Panel:new(state, args)
     args = args or {}
@@ -49,7 +49,7 @@ function Panel:new(state, args)
     return obj
 end
 
----@param state GameState.Game|GameState
+---@param state GameState.Game
 function Panel:__constructor__(state, args)
     self.gamestate = state
 
@@ -120,12 +120,20 @@ function Panel:__constructor__(state, args)
         self.y + self.h / 2 - font.__font_size, self.x + self.w,
         "center"
     )
+
+    self.arrows = {
+        Arrow:new(self.gamestate, self, { id = 1 }),
+        Arrow:new(self.gamestate, self, { id = 2 }),
+        Arrow:new(self.gamestate, self, { id = 3 }),
+        Arrow:new(self.gamestate, self, { id = 4 }),
+    }
 end
 
 --==========================================================================
 do
     function Panel:load()
         Wire:load()
+        Arrow:load()
     end
 
     function Panel:init()
@@ -134,6 +142,7 @@ do
 
     function Panel:finish()
         Wire:finish()
+        Arrow:finish()
     end
 end
 --==========================================================================
@@ -308,6 +317,7 @@ function Panel:mouse_pressed(x, y, button)
 
             if not success then
                 _G.PLAY_SFX("shock")
+
                 wire:turn_inactive()
 
                 self:shake()
@@ -318,6 +328,10 @@ function Panel:mouse_pressed(x, y, button)
 
                 timer:decrement(5 + self.n_shocks)
                 timer:pause(0.2 * 6)
+
+                if not timer:time_is_up() then
+                    PLAY_SFX("tick tock")
+                end
 
                 self.n_shocks = self.n_shocks + 1
                 self.gamestate:game_decrement_param("score", 100)
@@ -417,6 +431,13 @@ function Panel:update(dt)
         local wire = self.wires[i]
         wire:update(dt)
     end
+
+    for i = 1, #self.arrows do
+        ---@type Arrow
+        local obj = self.arrows[i]
+
+        obj:update(dt)
+    end
 end
 
 function Panel:my_draw()
@@ -443,6 +464,15 @@ function Panel:my_draw()
         ---@type Game.Component.Wire
         local wire = self.wires[i]
         wire:draw()
+    end
+
+    if not self.gamestate:game_get_timer():time_is_up() then
+        for i = 1, #self.arrows do
+            ---@type Arrow
+            local obj = self.arrows[i]
+
+            obj:draw()
+        end
     end
 
     -- local Font = _G.JM_Font
