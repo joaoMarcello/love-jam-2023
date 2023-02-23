@@ -1,6 +1,7 @@
 local Component = require "scripts.component"
 local Piece = require "scripts.wirePiece"
 local Plug = require "scripts.wirePlug"
+local Lamp = require "scripts.lamp"
 
 ---@enum Game.Component.Wire.States
 local States = {
@@ -11,12 +12,17 @@ local States = {
 
 ---@enum Game.Component.Wire.Colors
 local Colors = {
-    red = { 1, 0, 0, 1 },
-    green = { 0, 1, 0, 1 },
-    blue = { 0, 0, 1, 1 },
-    yellow = { 1, 1, 0, 1 },
+    red = _G.JM_Utils:get_rgba2(180, 32, 42, 255),
+    green = _G.JM_Utils:get_rgba2(89, 193, 53, 255),
+    blue = _G.JM_Utils:get_rgba2(40, 92, 196, 255),
+    yellow = _G.JM_Utils:get_rgba2(240, 235, 108, 255),
     white = { 0.8, 0.8, 0.8, 1 }
 }
+Colors[1] = Colors.red
+Colors[2] = Colors.green
+Colors[3] = Colors.blue
+Colors[4] = Colors.yellow
+
 
 local img
 
@@ -56,6 +62,8 @@ function Wire:__constructor__(state, panel, args)
     self.id = args.id
     self.pos_init = ((self.id - 1) * 3) + 1
     self.x = self.panel.x + 32 * (self.pos_init - 1)
+
+    self:set_hidden_color(Colors[self.id])
 
     ---@type Game.Component.Wire.States
     self.state = States.inactive
@@ -241,6 +249,8 @@ function Wire:__constructor__(state, panel, args)
     self.plug = Plug:new(state, self, {
 
     })
+
+    self.lamp = Lamp:new(state, self, {})
     -- self:plug(self.id)
 end
 
@@ -249,6 +259,7 @@ do
     function Wire:load()
         Piece:load()
         Plug:load()
+        Lamp:load(self)
 
         img = img or {
                 -- ["wire"] = love.graphics.newImage('/data/image/wire.png')
@@ -262,6 +273,7 @@ do
     function Wire:finish()
         Piece:finish()
         Plug:finish()
+        Lamp:finish()
 
         if img then
             local r = img['wire'] and img['wire']:release()
@@ -438,6 +450,8 @@ function Wire:update(dt)
     end
 
     self.plug:update(dt)
+
+    self.lamp:update(dt)
 end
 
 function Wire:draw()
@@ -461,6 +475,8 @@ function Wire:draw()
     end
 
     self.plug:draw()
+
+    self.lamp:draw()
 
     -- Pack.Font:print("" .. self.pos[1] .. "-" .. self.pos[2] .. "-" .. self.pos[3], self.x, self.y - 20)
 

@@ -99,11 +99,11 @@ function Panel:__constructor__(state, args)
         return a.draw_order < b.draw_order
     end)
 
-    for i = 1, 4 do
-        ---@type Game.Component.Wire
-        local wire = self.wires_by_id[i]
-        local r = wire and wire:set_hidden_color(Colors[i])
-    end
+    -- for i = 1, 4 do
+    --     ---@type Game.Component.Wire
+    --     local wire = self.wires_by_id[i]
+    --     local r = wire and wire:set_hidden_color(Colors[i])
+    -- end
 
     self.n_wires = #self.wires
 

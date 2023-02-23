@@ -282,7 +282,7 @@ State:implements {
             prev_panel = panel
 
             panel = Panel:new(State, {
-                x = prev_panel.x + prev_panel.w + 32 * 3
+                x = prev_panel.x + prev_panel.w + 32 * 4
             })
 
             camera.target = nil
