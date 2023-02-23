@@ -10,8 +10,11 @@ love.mouse.setRelativeMode(true)
 collectgarbage("setstepmul", 300)
 collectgarbage("setpause", 200)
 
----@type JM.Font.Font
-FONT_GUI = {}
+---@type JM.Font.Font|any
+FONT_GUI = nil
+
+---@type JM.Font.Font|any
+FONT_LEVEL = nil
 
 ---@class GameState: JM.Scene
 ---@field load function
@@ -73,7 +76,15 @@ function love.load()
         path = "/data/font/Orbitron/Orbitron-Medium.ttf",
         path_bold = "data/font/Orbitron/Orbitron-Bold.ttf",
         dpi = 32,
-        name = "retro gaming",
+        name = "orbitron",
+        font_size = 18,
+        character_space = 0
+    }
+
+    FONT_LEVEL = Pack.FontGenerator:new_by_ttf {
+        path = '/data/font/BlackOpsOne-Regular.ttf',
+        dpi = 32,
+        name = 'black ops one',
         font_size = 18,
         character_space = 0
     }

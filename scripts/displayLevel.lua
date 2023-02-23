@@ -21,7 +21,7 @@ function Display:__constructor__(state)
     self.x = 32 * 16
     self.y = 32 * 1
     self.level = 1
-    font = font or state:game_get_gui_font()
+    font = font or _G.FONT_LEVEL --state:game_get_gui_font()
 end
 
 function Display:load()
@@ -54,7 +54,7 @@ function Display:update(dt)
 end
 
 function Display:my_draw()
-    font:printf("<color, 1, 1, 1> <bold> Lvl. " .. self.level, self.x, self.y, "right", self.x + 32 * 6)
+    font:printf(string.format("<color, 1, 1, 1> <bold> Level %02d", self.level), self.x, self.y, "right", self.x + 32 * 6)
 end
 
 function Display:draw()
