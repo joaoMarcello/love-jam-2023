@@ -217,7 +217,7 @@ end
 function Icon:draw()
     Affectable.draw(self, self.my_draw)
 
-    if self.state == States.grab or true then
+    if self.state == States.grab then
         self.mouseIcon:draw()
     end
 end

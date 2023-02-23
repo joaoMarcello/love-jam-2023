@@ -93,6 +93,12 @@ function Icon:update(dt)
     -- self.x, self.y = self.x + dx, self.y + dy
 end
 
+function Icon:draw_shadow(frame)
+    self.anima:set_color2(0, 0, 0, 0.5)
+    self.anima:draw(self.x + frame.ox + 2, self.y + frame.oy + 2)
+    self.anima:set_color2(1, 1, 1, 1)
+end
+
 function Icon:my_draw()
     -- if self.state == States.normal then
     --     love.graphics.setColor(0, 0, 1)
@@ -103,9 +109,11 @@ function Icon:my_draw()
 
     if self.state == States.normal then
         local frame = self.anima:get_current_frame()
+        self:draw_shadow(frame)
         self.anima:draw(self.x + frame.ox, self.y + frame.oy)
     else
         local frame = self.anima_alert:get_current_frame()
+        self:draw_shadow(frame)
         self.anima_alert:draw(self.x + frame.ox, self.y + frame.oy)
     end
 end
