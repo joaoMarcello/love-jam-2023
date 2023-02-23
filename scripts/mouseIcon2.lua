@@ -1,5 +1,8 @@
 local Component = require "scripts.component"
 
+---@type love.Image|any
+local img
+
 ---@enum MouseIcon2.States
 local States = {
     normal = 1,
@@ -30,17 +33,20 @@ function Icon:__constructor__(state, args)
 
     local mx, my = self.gamestate:get_mouse_position()
     self.x, self.y = mx, my
-    self.mx, self.my = self.x, self.y
+    -- self.mx, self.my = self.x, self.y
+
+    self.anima = _G.JM_Anima:new { img = img, max_filter = "linear" }
 
     self:set_state(States.normal)
 end
 
 function Icon:load()
-
+    img = img or love.graphics.newImage('/data/image/mouse.png')
 end
 
 function Icon:finish()
-
+    local r = img and img:release()
+    img = nil
 end
 
 function Icon:set_state(state)
@@ -89,6 +95,9 @@ function Icon:my_draw()
 
     -- love.graphics.circle("fill", self.x, self.y, self.w)
     love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
+
+    local frame = self.anima:get_current_frame()
+    self.anima:draw(self.x + frame.ox, self.y + frame.oy)
 end
 
 function Icon:draw()
