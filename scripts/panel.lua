@@ -37,7 +37,7 @@ Panel.Colors = Colors
 function Panel:new(state, args)
     args = args or {}
     args.x = args.x or 0
-    args.y = args.y or 64
+    args.y = args.y or 32
     args.w = (32 * 3 * 4) - (32 * 2)
     args.h = (32 * 2 * 3) + (32 * 6)
 

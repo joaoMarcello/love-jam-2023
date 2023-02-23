@@ -24,8 +24,8 @@ FONT_GUI = {}
 
 --==================================================================
 
-SCREEN_HEIGHT = Pack.Utils:round(32 * 15)
-SCREEN_WIDTH = Pack.Utils:round(SCREEN_HEIGHT * 1.5)
+SCREEN_HEIGHT = Pack.Utils:round(480) -- 32*15
+SCREEN_WIDTH = Pack.Utils:round(720) -- *1.5
 
 --==================================================================
 

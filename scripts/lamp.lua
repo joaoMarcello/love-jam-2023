@@ -90,7 +90,7 @@ function Lamp:my_draw()
         self.anima_on:draw_rec(self:rect())
 
         love.graphics.setBlendMode("add")
-        self.light:draw(self.x + self.w / 2, self.y + self.h / 2)
+        self.light:draw(self.x + self.w / 2, self.y + self.h / 2 + 2)
         love.graphics.setBlendMode("alpha")
     else
         self.anima_off:draw_rec(self:rect())
