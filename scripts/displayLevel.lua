@@ -54,7 +54,7 @@ function Display:update(dt)
 end
 
 function Display:my_draw()
-    font:printf("<color, 1, 1, 1>Lvl. " .. self.level, self.x, self.y, "right", self.x + 32 * 6)
+    font:printf("<color, 1, 1, 1> <bold> Lvl. " .. self.level, self.x, self.y, "right", self.x + 32 * 6)
 end
 
 function Display:draw()
