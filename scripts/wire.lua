@@ -69,6 +69,13 @@ function Wire:__constructor__(state, panel, args)
     self.state = States.inactive
 
     self.pieces = {}
+    local piece = Piece:new(state, self, {
+        x = self.x,
+        y = self.y - 32,
+        type = "init"
+    })
+    piece.allow_shadow = false
+    table.insert(self.pieces, piece)
 
     self.pos = {}
     self.socket, self.socket_id = panel:get_socket(self)
@@ -241,6 +248,8 @@ function Wire:__constructor__(state, panel, args)
         end
         -- break
     end
+
+
 
     self.n_pieces = #self.pieces
 

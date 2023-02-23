@@ -3,6 +3,9 @@ local Component = require "scripts.component"
 local Wire = require "scripts.wire"
 local Arrow = require "scripts.arrow"
 
+---@type love.Image|any
+local img_socket
+
 ---@enum Game.Component.Panel.Colors
 local Colors = {
     Wire.Colors.red,
@@ -127,6 +130,14 @@ function Panel:__constructor__(state, args)
         Arrow:new(self.gamestate, self, { id = 3 }),
         Arrow:new(self.gamestate, self, { id = 4 }),
     }
+
+    local Anima = _G.JM_Anima
+
+    self.sockets_anima = Anima:new { img = img_socket }
+
+    self.sockets_anima2 = Anima:new { img = img_socket,
+        frames_list = { { 0, 32, 32, 64 } }
+    }
 end
 
 --==========================================================================
@@ -134,6 +145,8 @@ do
     function Panel:load()
         Wire:load()
         Arrow:load()
+
+        img_socket = img_socket or love.graphics.newImage('/data/image/socket.png')
     end
 
     function Panel:init()
@@ -143,6 +156,8 @@ do
     function Panel:finish()
         Wire:finish()
         Arrow:finish()
+        local r = img_socket and img_socket:release()
+        img_socket = nil
     end
 end
 --==========================================================================
@@ -444,32 +459,42 @@ function Panel:update(dt)
 end
 
 function Panel:my_draw()
-    love.graphics.setColor(132 / 255, 155 / 255, 228 / 255, 1)
+    -- love.graphics.setColor(132 / 255, 155 / 255, 228 / 255, 1)
+    love.graphics.setColor(219 / 255, 164 / 255, 99 / 255, 1)
     love.graphics.rectangle("fill", self.x - 32, self.y - 32, self.w + 64, self.h + 64)
 
-    love.graphics.setColor(132 / 255, 155 / 255, 228 / 255, 1)
+    -- love.graphics.setColor(132 / 255, 155 / 255, 228 / 255, 1)
+    love.graphics.setColor(228 / 255, 210 / 255, 170 / 255, 1)
     love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
 
     love.graphics.setColor(0, 0, 0, 1)
     love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
     -- love.graphics.rectangle("fill", self.x, self.y + 32 * 6, self.w, 2)
 
-    if self.cur_socket then
-        local s = socket_to_relative(self.cur_socket) - 1
-        love.graphics.setColor(0, 0, 1, 0.7)
-        love.graphics.rectangle("fill", self.x + s * 32, self.y + self.h, 32, 32)
-    end
+    -- if self.cur_socket then
+    --     local s = socket_to_relative(self.cur_socket) - 1
+    --     love.graphics.setColor(0, 0, 1, 0.7)
+    --     love.graphics.rectangle("fill", self.x + s * 32, self.y + self.h, 32, 32)
+    -- end
 
-    if self.selected_id then
-        local s = socket_to_relative(self.selected_id) - 1
-        love.graphics.setColor(1, 1, 0, 0.7)
-        love.graphics.rectangle("fill", self.x + s * 32, self.y + 32 * 6, 32, 32)
+    -- if self.selected_id then
+    --     local s = socket_to_relative(self.selected_id) - 1
+    --     love.graphics.setColor(1, 1, 0, 0.7)
+    --     love.graphics.rectangle("fill", self.x + s * 32, self.y + 32 * 6, 32, 32)
+    -- end
+
+    for i = 1, 4 do
+        self.sockets_anima:draw_rec(self.x + (socket_to_relative(i) - 1) * 32, self.y + self.h, 32, 32)
     end
 
     for i = 1, self.n_wires do
         ---@type Game.Component.Wire
         local wire = self.wires[i]
         wire:draw()
+    end
+
+    for i = 1, 4 do
+        self.sockets_anima2:draw_rec(self.x + (socket_to_relative(i) - 1) * 32, self.y + self.h, 32, 32)
     end
 
     if not self.gamestate:game_get_timer():time_is_up() then

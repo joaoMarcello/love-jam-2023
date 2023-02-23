@@ -14,6 +14,7 @@ local Types = {
     ["right"] = 6,
     ["top-right"] = 7,
     ["top-middle"] = 8,
+    ["init"] = 9
 }
 
 local Map = {
@@ -25,6 +26,7 @@ local Map = {
     [Types["right"]] = { 64, (32 * 3), 32, (32 * 2) },
     [Types["top-right"]] = { 64, (32 * 3), 0, 32 },
     [Types["top-middle"]] = { 32, 64, 0, 32 },
+    [Types["init"]] = { 96, 96 + 32, 0, 32 },
 }
 
 ---@class Game.Component.Piece : GameComponent
@@ -66,7 +68,9 @@ function Piece:__constructor__(state, wire, args)
 
         frames_list = {
             Map[args.type]
-        }
+        },
+
+        max_filter = "linear"
     }
 
     self.anima:set_color2(unpack(wire.color__))

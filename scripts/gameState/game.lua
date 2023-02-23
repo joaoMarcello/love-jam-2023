@@ -203,6 +203,10 @@ State:implements {
             State.camera:toggle_world_bounds()
         end
 
+        if key == 'p' then
+            State:pause(10)
+        end
+
         if not timer:time_is_up()
             and not panel:is_complete()
             and not panel:is_locked()
@@ -233,13 +237,6 @@ State:implements {
         mouse_icon:update(dt)
 
         if not countdown:is_released() then return end
-
-        -- local score = param['score']
-        -- if score > param['hi_score'] then
-        --     display_score:ghost()
-        -- else
-        --     display_score:remove_eff_ghost()
-        -- end
 
         -- GAME OVER
         if timer:time_is_up() then
