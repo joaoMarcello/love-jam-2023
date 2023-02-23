@@ -3,6 +3,9 @@ local Affectable = _G.JM_Affectable
 ---@type JM.Font.Font|any
 local font
 
+---@type love.Image|any
+local img
+
 ---@class CountDown: JM.Template.Affectable
 local Count = setmetatable({}, Affectable)
 Count.__index = Count
@@ -22,10 +25,10 @@ function Count:__constructor__(args)
     self.h = 32 * 3
 
     self.objects = {
-        font:generate_phrase("1", self.x, self.y, self.x + self.w, "center"),
-        font:generate_phrase("2", self.x, self.y, self.x + self.w, "center"),
-        font:generate_phrase("3", self.x, self.y, self.x + self.w, "center"),
-        font:generate_phrase("<effect=scream> LET'S CONNECT!!!", self.x, self.y, self.x + self.w, "center"),
+        font:generate_phrase("<bold>1", self.x, self.y, self.x + self.w, "center"),
+        font:generate_phrase("<bold>2", self.x, self.y, self.x + self.w, "center"),
+        font:generate_phrase("<bold>3", self.x, self.y, self.x + self.w, "center"),
+        font:generate_phrase("<bold><effect=scream> LET'S CONNECT!!!", self.x, self.y, self.x + self.w, "center"),
     }
 
     self.time = 0
@@ -44,14 +47,24 @@ function Count:__constructor__(args)
         self.lock = false
         PLAY_SFX("countdown")
     end)
+
+    self.anima = _G.JM_Anima:new {
+        img = img
+    }
+
+    self.anima:apply_effect('float', { range = 3, speed = 1 })
+    self:apply_effect('float', { range = 3, speed = 1 })
 end
 
 function Count:load()
     font = _G.FONT_GUI
+    img = img or love.graphics.newImage('/data/image/placa.png')
 end
 
 function Count:finish()
     font = nil
+    local r = img and img:release()
+    img = nil
 end
 
 function Count:is_released()
@@ -60,6 +73,7 @@ end
 
 function Count:update(dt)
     Affectable.update(self, dt)
+    self.anima:update(dt)
 
     if not self.lock then
         self.time = self.time + dt
@@ -84,6 +98,14 @@ function Count:update(dt)
     end
 end
 
+function Count:draw_shadow()
+    self.anima:set_color2(0, 0, 0, 0.3)
+    self.anima:set_scale(0.95, 0.95)
+    self.anima:draw(self.x + self.w / 2, self.y + self.h / 2 + 15)
+    self.anima:set_scale(1, 1)
+    self.anima:set_color2(1, 1, 1, 1)
+end
+
 function Count:my_draw()
     ---@type JM.Font.Phrase
     local obj = self.objects[self.current]
@@ -95,11 +117,15 @@ function Count:my_draw()
 end
 
 function Count:draw()
-    love.graphics.setColor(0.9, 0.9, 0.9)
-    love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
+    self:draw_shadow()
+    self.anima:draw(self.x + self.w / 2, self.y + self.h / 2)
 
-    love.graphics.setColor(0, 0, 0, 1)
-    love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
+    -- love.graphics.setColor(0.9, 0.9, 0.9)
+    -- love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
+
+    -- love.graphics.setColor(0, 0, 0, 1)
+    -- love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
+
 
     Affectable.draw(self, self.my_draw)
 end
