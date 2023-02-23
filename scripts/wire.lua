@@ -15,7 +15,7 @@ local Colors = {
     green = { 0, 1, 0, 1 },
     blue = { 0, 0, 1, 1 },
     yellow = { 1, 1, 0, 1 },
-    white = { 1, 1, 1, 1 }
+    white = { 0.8, 0.8, 0.8, 1 }
 }
 
 local img
@@ -47,7 +47,11 @@ function Wire:__constructor__(state, panel, args)
     self.gamestate = state
     self.panel = panel
 
-    self.color__ = Colors.white
+    local value = function()
+        return math.random() * 0.2 + 0.9
+    end
+
+    self.color__ = _G.JM_Utils:get_rgba(value(), value(), value(), 1)
 
     self.id = args.id
     self.pos_init = ((self.id - 1) * 3) + 1

@@ -3,6 +3,12 @@ local Piece = require "scripts.wirePiece"
 
 local check_collision = _G.JM_Love2D_Package.Physics.collision_rect
 
+---@type love.Image|any
+local img
+
+---@type love.Image|any
+local img_mask
+
 ---@class WirePlug : GameComponent
 local Plug = setmetatable({}, Component)
 Plug.__index = Plug
@@ -47,14 +53,22 @@ function Plug:__constructor__(state, wire, args)
 
     ---@type JM.Effect|any
     self.eff_pulse = nil
+
+    self.anima = _G.JM_Anima:new { img = img }
+    self.mask = _G.JM_Anima:new { img = img_mask }
+    self.mask:set_scale(1.2, 1.2)
 end
 
 function Plug:load()
-
+    img = img or love.graphics.newImage('/data/image/plug.png')
+    img_mask = img_mask or love.graphics.newImage('/data/image/plug mask.png')
 end
 
 function Plug:finish()
-
+    local r = img and img:release()
+    r = img_mask and img_mask:release()
+    img = nil
+    img_mask = nil
 end
 
 function Plug:pulse()
@@ -140,8 +154,11 @@ function Plug:update(dt)
 end
 
 function Plug:my_draw()
-    love.graphics.setColor(0, 0, 0, 1)
-    love.graphics.rectangle("fill", self.x, self.y, self.w, self.h / 2)
+    -- love.graphics.setColor(0, 0, 0, 1)
+    -- love.graphics.rectangle("fill", self.x, self.y, self.w, self.h / 2)
+
+    -- self.mask:draw(self.x, self.y)
+    self.anima:draw_rec(self.x, self.y, self.w, self.h - 3)
 end
 
 function Plug:draw()

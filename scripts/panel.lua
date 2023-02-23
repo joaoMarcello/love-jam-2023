@@ -449,7 +449,7 @@ function Panel:my_draw()
 
     love.graphics.setColor(0, 0, 0, 1)
     love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
-    love.graphics.rectangle("fill", self.x, self.y + 32 * 6, self.w, 2)
+    -- love.graphics.rectangle("fill", self.x, self.y + 32 * 6, self.w, 2)
 
     if self.cur_socket then
         local s = socket_to_relative(self.cur_socket) - 1

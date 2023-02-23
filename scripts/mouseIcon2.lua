@@ -3,6 +3,9 @@ local Component = require "scripts.component"
 ---@type love.Image|any
 local img
 
+---@type love.Image|any
+local img_alert
+
 ---@enum MouseIcon2.States
 local States = {
     normal = 1,
@@ -36,17 +39,21 @@ function Icon:__constructor__(state, args)
     -- self.mx, self.my = self.x, self.y
 
     self.anima = _G.JM_Anima:new { img = img, max_filter = "linear" }
+    self.anima_alert = _G.JM_Anima:new { img = img_alert, max_filter = "linear" }
 
     self:set_state(States.normal)
 end
 
 function Icon:load()
     img = img or love.graphics.newImage('/data/image/mouse.png')
+    img_alert = img_alert or love.graphics.newImage('/data/image/mouse alert.png')
 end
 
 function Icon:finish()
     local r = img and img:release()
+    r = img_alert and img:release()
     img = nil
+    img_alert = nil
 end
 
 function Icon:set_state(state)
@@ -87,17 +94,20 @@ function Icon:update(dt)
 end
 
 function Icon:my_draw()
+    -- if self.state == States.normal then
+    --     love.graphics.setColor(0, 0, 1)
+    -- else
+    --     love.graphics.setColor(1, 0, 0)
+    -- end
+    -- love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
+
     if self.state == States.normal then
-        love.graphics.setColor(0, 0, 1)
+        local frame = self.anima:get_current_frame()
+        self.anima:draw(self.x + frame.ox, self.y + frame.oy)
     else
-        love.graphics.setColor(1, 0, 0)
+        local frame = self.anima_alert:get_current_frame()
+        self.anima_alert:draw(self.x + frame.ox, self.y + frame.oy)
     end
-
-    -- love.graphics.circle("fill", self.x, self.y, self.w)
-    love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
-
-    local frame = self.anima:get_current_frame()
-    self.anima:draw(self.x + frame.ox, self.y + frame.oy)
 end
 
 function Icon:draw()
