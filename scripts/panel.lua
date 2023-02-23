@@ -434,7 +434,7 @@ function Panel:update(dt)
     mx, my = mouseIcon2.x, mouseIcon2.y
 
     if mx <= self.x + self.w and mx >= self.x
-        and my >= (self.y + self.h - 32 * 1.8)
+        and my >= (self.y + self.h - 32 * 2)
     then
         self.cur_socket = math.floor((mx - self.x) / (self.w / 4)) + 1
         self.cur_socket = Utils:clamp(self.cur_socket, 1, 4)

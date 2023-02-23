@@ -3,6 +3,9 @@ local GUI_GC = require "jm-love2d-package.modules.gui.component"
 ---@type JM.Font.Font|nil
 local font
 
+---@type love.Image|any
+local img
+
 ---@class Button : JM.GUI.Component
 local Button = setmetatable({}, GUI_GC)
 Button.__index = Button
@@ -47,15 +50,25 @@ function Button:__constructor__(state, args)
         if self.eff_pulse then self.eff_pulse.__remove = true end
         self.eff_pulse = nil
     end)
+
+    self.anima = _G.JM_Anima:new {
+        img = img,
+        max_filter = 'linear'
+    }
+
+    self.anima:set_size(self.w, self.h)
 end
 
 ---@param new_font JM.Font.Font
 function Button:load(new_font)
     font = new_font
+    img = img or love.graphics.newImage('/data/image/button.png')
 end
 
 function Button:finish()
     font = nil
+    local r = img and img:release()
+    img = nil
 end
 
 function Button:update(dt)
@@ -63,16 +76,22 @@ function Button:update(dt)
 end
 
 function Button:__custom_draw__()
-    love.graphics.setColor(self.__color)
-    love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
+    -- love.graphics.setColor(self.__color)
+    -- love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
 
-    love.graphics.setColor(50 / 255, 43 / 255, 40 / 255)
-    love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
+    -- love.graphics.setColor(50 / 255, 43 / 255, 40 / 255)
+    -- love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
+
+    self.anima:draw(self.x + self.w / 2, self.y + self.h / 2)
 
     if font then
         local obj = font:generate_phrase(self.text, self.x, self.y, self.x + self.w, "center")
 
-        obj:draw(self.x, self.y + self.h / 2 - obj:text_height(obj:get_lines(self.x)) / 2, "center", self.x + self.w)
+        font:push()
+        font:set_font_size(16)
+        obj:draw(self.x, self.y + self.h / 2 - obj:text_height(obj:get_lines(self.x)) / 2 + font.__line_space / 2,
+            "center", self.x + self.w)
+        font:pop()
     end
 end
 
