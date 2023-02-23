@@ -49,7 +49,8 @@ function Count:__constructor__(args)
     end)
 
     self.anima = _G.JM_Anima:new {
-        img = img
+        img = img,
+        max_filter = 'linear'
     }
 
     self.anima:apply_effect('float', { range = 3, speed = 1 })

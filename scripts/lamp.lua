@@ -35,7 +35,7 @@ function Lamp:__constructor__(state, wire, args)
     self.anima_on = _G.JM_Anima:new { img = imgs[color][1] }
 
     self.light = _G.JM_Anima:new { img = img_light }
-    self.light:set_size(45, 45)
+    self.light:set_size(60, 60)
     self.light:set_color2(unpack(color))
     self.light:set_color2(nil, nil, nil, 0.8)
 end

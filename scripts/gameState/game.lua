@@ -26,7 +26,7 @@ State.camera:toggle_grid()
 State.camera:toggle_world_bounds()
 State.camera.border_color = { 0, 0, 0, 0 }
 
-State.camera:set_focus_x(32 * 3 * State.camera.desired_scale)
+State.camera:set_focus_x((32 * 3 - 16) * State.camera.desired_scale)
 -- State.camera.max_speed_x = 32 * 22
 -- State.camera.default_initial_speed_x = 32 * 4
 -- State.camera.acc_x = 32 * 16
