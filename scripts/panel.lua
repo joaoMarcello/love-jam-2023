@@ -6,6 +6,9 @@ local Arrow = require "scripts.arrow"
 ---@type love.Image|any
 local img_socket
 
+---@type love.Image|any
+local img_panel
+
 ---@enum Game.Component.Panel.Colors
 local Colors = {
     Wire.Colors.red,
@@ -138,6 +141,11 @@ function Panel:__constructor__(state, args)
     self.sockets_anima2 = Anima:new { img = img_socket,
         frames_list = { { 0, 32, 32, 64 } }
     }
+
+    self.panel_anima = Anima:new {
+        img = img_panel,
+        max_filter = "linear"
+    }
 end
 
 --==========================================================================
@@ -147,6 +155,8 @@ do
         Arrow:load()
 
         img_socket = img_socket or love.graphics.newImage('/data/image/socket.png')
+
+        img_panel = img_panel or love.graphics.newImage('/data/image/panel.png')
     end
 
     function Panel:init()
@@ -459,21 +469,24 @@ function Panel:update(dt)
 end
 
 function Panel:my_draw()
-    love.graphics.setColor(156 / 255, 96 / 255, 59 / 255, 1)
-    -- love.graphics.setColor(139 / 255, 147 / 255, 175 / 255, 1)
-    love.graphics.rectangle("fill", self.x - 64, self.y - 64, self.w + 64 * 2, self.h + 64 * 2)
+    -- do
+    --     love.graphics.setColor(156 / 255, 96 / 255, 59 / 255, 1)
+    --     -- love.graphics.setColor(139 / 255, 147 / 255, 175 / 255, 1)
+    --     love.graphics.rectangle("fill", self.x - 64, self.y - 64, self.w + 64 * 2, self.h + 64 * 2)
 
-    love.graphics.setColor(219 / 255, 164 / 255, 99 / 255, 1)
-    love.graphics.rectangle("fill", self.x - 32, self.y - 32, self.w + 64, self.h + 64)
+    --     love.graphics.setColor(219 / 255, 164 / 255, 99 / 255, 1)
+    --     love.graphics.rectangle("fill", self.x - 32, self.y - 32, self.w + 64, self.h + 64)
 
-    love.graphics.setColor(228 / 255, 210 / 255, 170 / 255, 1)
-    love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
+    --     love.graphics.setColor(228 / 255, 210 / 255, 170 / 255, 1)
+    --     love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
 
-    love.graphics.setColor(0, 0, 0, 0.5)
-    love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
-    love.graphics.setColor(0, 0, 0, 0.5)
-    love.graphics.rectangle("line", self.x - 32, self.y - 32, self.w + 64, self.h + 64)
-    -- love.graphics.rectangle("fill", self.x, self.y + 32 * 6, self.w, 2)
+    --     love.graphics.setColor(0, 0, 0, 0.5)
+    --     love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
+    --     love.graphics.setColor(0, 0, 0, 0.5)
+    --     love.graphics.rectangle("line", self.x - 32, self.y - 32, self.w + 64, self.h + 64)
+    --     -- love.graphics.rectangle("fill", self.x, self.y + 32 * 6, self.w, 2)
+    -- end
+    self.panel_anima:draw_rec(self.x, self.y, self.w, self.h + 64)
 
     -- if self.cur_socket then
     --     local s = socket_to_relative(self.cur_socket) - 1

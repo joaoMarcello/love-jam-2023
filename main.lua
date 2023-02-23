@@ -88,7 +88,7 @@ function love.load()
     Sound:add_song("/data/song/Justin-Mahar-Pumped.ogg", "title")
     -- Sound:add_song("/data/song/Justin-Mahar-The-Grind.ogg", "game", 0.2)
 
-    CHANGE_GAME_STATE(require 'scripts.gameState.splash', true, nil, nil, nil, nil, nil)
+    CHANGE_GAME_STATE(require 'scripts.gameState.game', true, nil, nil, nil, nil, nil)
 end
 
 function love.keypressed(key)
