@@ -102,7 +102,7 @@ function Plug:is_been_pointed()
 
     local c = check_collision(
         panel.x + (self.wire.socket_id - 1) * w, self.y, w, self.h,
-        mx, my, glove.w, glove.h
+        mx, my, 0, glove.h
     )
 
     return c
