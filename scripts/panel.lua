@@ -445,6 +445,9 @@ end
 
 function Panel:my_draw()
     love.graphics.setColor(132 / 255, 155 / 255, 228 / 255, 1)
+    love.graphics.rectangle("fill", self.x - 32, self.y - 32, self.w + 64, self.h + 64)
+
+    love.graphics.setColor(132 / 255, 155 / 255, 228 / 255, 1)
     love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
 
     love.graphics.setColor(0, 0, 0, 1)
