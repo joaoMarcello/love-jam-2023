@@ -365,7 +365,8 @@ State:implements {
                 r, b = State.camera:world_to_screen(r, b)
 
                 -- love.graphics.setColor(121 / 255, 103 / 255, 85 / 255)
-                love.graphics.setColor(90 / 255, 78 / 255, 68 / 255)
+                -- love.graphics.setColor(90 / 255, 78 / 255, 68 / 255)
+                love.graphics.setColor(88 / 255, 50 / 255, 29 / 255)
                 love.graphics.rectangle('fill', 32 * 15, 0, 32 * 8, SCREEN_HEIGHT)
 
                 display_level:draw()
