@@ -26,6 +26,11 @@ local logo
 
 ---@type JM.Anima
 local logo_anima
+
+function State:menu_get_mouse_icon()
+    return mouse_icon
+end
+
 --============================================================================
 State:implements {
     load = function()
@@ -56,6 +61,10 @@ State:implements {
 
         bt_start:on_event("mouse_pressed", function(x, y, button)
             CHANGE_GAME_STATE(require "scripts.gameState.howToPlay")
+        end)
+
+        bt_credits:on_event("mouse_pressed", function()
+            CHANGE_GAME_STATE(require "scripts.gameState.credits", true)
         end)
 
         bt_quit:on_event("mouse_pressed", function(x, y, button)

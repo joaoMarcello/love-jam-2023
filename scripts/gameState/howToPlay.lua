@@ -37,7 +37,7 @@ State:implements {
         end)
 
         mouse_icon = MouseIcon:new(State)
-        mouse_icon.x = button_skip.x - mouse_icon.w - 5
+        mouse_icon.x = button_skip.x - mouse_icon.w - 32
         mouse_icon.y = button_skip.y - mouse_icon.h
 
         local font = FONT_GUI
