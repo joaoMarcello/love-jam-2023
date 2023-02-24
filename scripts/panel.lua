@@ -391,9 +391,9 @@ function Panel:mouse_pressed(x, y, button)
                 end
 
                 self.n_shocks = self.n_shocks + 1
-                self.gamestate:game_decrement_param("score", 100)
+                self.gamestate:game_decrement_param("score", 150)
                 self.gamestate:game_increment_param("shocks", 1)
-
+                self:show_text( -150)
                 dispatch_event(self, Events.shock)
                 --
             elseif self:is_complete() then

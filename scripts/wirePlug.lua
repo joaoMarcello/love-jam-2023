@@ -9,6 +9,9 @@ local img
 ---@type love.Image|any
 local img_mask
 
+---@type love.Image|any
+local img_click
+
 ---@class WirePlug : GameComponent
 local Plug = setmetatable({}, Component)
 Plug.__index = Plug
@@ -57,18 +60,29 @@ function Plug:__constructor__(state, wire, args)
     self.anima = _G.JM_Anima:new { img = img }
     self.mask = _G.JM_Anima:new { img = img_mask }
     self.mask:set_scale(1.2, 1.2)
+
+    self.anima_click = _G.JM_Anima:new {
+        img = img_click,
+        frames = 5,
+        speed = 0.07,
+        max_filter = 'linear',
+        stop_at_the_end = true
+    }
 end
 
 function Plug:load()
     img = img or love.graphics.newImage('/data/image/plug.png')
     img_mask = img_mask or love.graphics.newImage('/data/image/plug mask.png')
+    img_click = img_click or love.graphics.newImage('/data/image/click-Sheet.png')
 end
 
 function Plug:finish()
     local r = img and img:release()
     r = img_mask and img_mask:release()
+    r = img_click and img_click:release()
     img = nil
     img_mask = nil
+    img_click = nil
 end
 
 function Plug:pulse()
@@ -122,6 +136,8 @@ function Plug:unplug()
 
     self.x = self.piece.x
     self.y = self.piece.y
+
+    self.anima_click:reset()
 end
 
 function Plug:update(dt)
@@ -144,6 +160,8 @@ function Plug:update(dt)
 
         self.x = self.piece.x
         self.y = self.piece.y
+    else
+        self.anima_click:update(dt)
     end
 
     if self:is_been_pointed() then
@@ -162,16 +180,21 @@ function Plug:my_draw()
 end
 
 function Plug:draw()
-    if self:is_plugged() then
+    local is_plugged = self:is_plugged()
+
+    if is_plugged then
         self.piece:draw()
     end
 
-    if self:is_tracking() or self:is_plugged() then
+    if is_plugged or self:is_tracking() then
         self.piece2:draw()
     end
 
     Component.draw(self, self.my_draw)
 
+    if is_plugged then
+        self.anima_click:draw(self.x + self.w / 2, self.y + self.h / 2)
+    end
     -- local font = _G.FONT_GUI
     -- font:print(self:is_been_pointed() and "true" or "false", self.x, self.y - 20)
 end
