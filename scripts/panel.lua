@@ -9,6 +9,9 @@ local img_socket
 ---@type love.Image|any
 local img_panel
 
+---@type love.Image|any
+local img_shock
+
 ---@enum Game.Component.Panel.Colors
 local Colors = {
     Wire.Colors.red,
@@ -146,6 +149,15 @@ function Panel:__constructor__(state, args)
         img = img_panel,
         max_filter = "linear"
     }
+
+    self.shock_anima = Anima:new {
+        img = img_shock,
+        speed = 0.1,
+        frames = 3,
+
+    }
+    self.shock_anima:set_size(nil, 32 * 6 * 2)
+    self.shock_anima:set_state("random")
 end
 
 --==========================================================================
@@ -157,6 +169,8 @@ do
         img_socket = img_socket or love.graphics.newImage('/data/image/socket.png')
 
         img_panel = img_panel or love.graphics.newImage('/data/image/panel.png')
+
+        img_shock = img_shock or love.graphics.newImage('/data/image/shock-Sheet.png')
     end
 
     function Panel:init()
@@ -466,6 +480,10 @@ function Panel:update(dt)
 
         obj:update(dt)
     end
+
+    if self.is_shaking then
+        self.shock_anima:update(dt)
+    end
 end
 
 function Panel:my_draw()
@@ -540,6 +558,10 @@ end
 
 function Panel:draw()
     Component.draw(self, self.my_draw)
+
+    if self.is_shaking and not self.__lock then
+        self.shock_anima:draw(self.x, self.y)
+    end
 end
 
 return Panel

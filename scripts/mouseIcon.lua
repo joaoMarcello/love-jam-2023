@@ -6,7 +6,8 @@ local States = {
     shock = 1,
     grab = 2,
     point = 3,
-    prepare = 4
+    prepare = 4,
+    cool = 5
 }
 
 local imgs
@@ -46,7 +47,17 @@ function Icon:__constructor__(state, args)
         [States.grab] = Anima:new { img = imgs[States.grab] },
         [States.prepare] = Anima:new { img = imgs[States.prepare] },
         [States.shock] = Anima:new { img = imgs[States.shock] },
+        [States.cool] = Anima:new { img = imgs[States.cool] },
     }
+
+    local point = self.anima[States.point]
+    point:apply_effect("float", { range = 3, speed = 0.6 })
+    point:apply_effect("pointing", { range = 3, speed = 0.6 })
+
+    local cool = self.anima[States.cool]
+    cool:apply_effect("float", { range = 3, speed = 0.6 })
+
+    self.cur_anima = self.anima[self.state]
 end
 
 function Icon:load()
@@ -57,6 +68,7 @@ function Icon:load()
             [States.prepare] = love.graphics.newImage('/data/image/glove prepare.png'),
             [States.grab] = love.graphics.newImage('/data/image/glove grab.png'),
             [States.shock] = love.graphics.newImage('/data/image/glove shock.png'),
+            [States.cool] = love.graphics.newImage('/data/image/glove cool.png'),
         }
 end
 
@@ -123,6 +135,8 @@ function Icon:get_color_state()
         return Utils:get_rgba(0, 0, 1, 1)
     elseif self.state == States.shock then
         return Utils:get_rgba(1, 1, 0, 1)
+    elseif self.state == States.cool then
+        return Utils:get_rgba2(1, 0, 0, 1)
     end
 end
 
@@ -195,30 +209,22 @@ function Icon:update(dt)
         end
 
         self:set_state(States.grab)
-        --
-        --
     elseif self.state == States.shock then
-        -- self.x, self.y = self.x + self.dx, self.y + self.dy
-        -- if self.x < camera.x then self.x = camera.x end
+        --
+        --
+    elseif panel:is_complete() then
+        self:set_state(States.cool)
         --
         --
     elseif self:is_in_point_mode() then
         self:set_state(States.point)
-
-        -- self.x, self.y = self.x + self.dx, self.y + self.dy
-        -- if self.x < camera.x then self.x = camera.x end
-        --
-        --
     else
         self:set_state(States.prepare)
-
-        -- self.x, self.y = self.x + self.dx, self.y + self.dy
-        -- if self.x < camera.x then self.x = camera.x end
     end
 
     ---@type JM.Anima
-    local cur_anima = self.anima[self.state]
-    cur_anima:update(dt)
+    self.cur_anima = self.anima[self.state]
+    self.cur_anima:update(dt)
 
     if self.state ~= States.grab then
         self.mouseIcon.x = self.x
@@ -236,12 +242,10 @@ function Icon:my_draw()
     love.graphics.setColor(self:get_color_state())
     love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
 
-    ---@type JM.Anima
-    local cur_anima = self.anima[self.state]
-    local frame = cur_anima:get_current_frame()
+    local frame = self.cur_anima:get_current_frame()
     frame.ox = 0
     frame.oy = 0
-    cur_anima:draw(self.x, self.y)
+    self.cur_anima:draw(self.x, self.y)
 end
 
 function Icon:draw()
