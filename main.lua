@@ -29,6 +29,7 @@ FONT_LEVEL = nil
 
 SCREEN_HEIGHT = Pack.Utils:round(480 + 16) -- 32*15
 SCREEN_WIDTH = Pack.Utils:round(720) -- *1.5
+local initial_state = 'game'
 
 --==================================================================
 
@@ -70,6 +71,8 @@ function PLAY_SONG(name)
     Pack.Sound:play_song(name)
 end
 
+--=========================================================================
+
 function love.load()
     --
     FONT_GUI = Pack.FontGenerator:new_by_ttf {
@@ -97,12 +100,20 @@ function love.load()
     Sound:add_sfx("/data/sfx/52593_michel-hollicardo_gun_shoot_cutted.ogg", "shoot", 0.1)
 
     Sound:add_song("/data/song/Justin-Mahar-Pumped.ogg", "title")
-    -- Sound:add_song("/data/song/Justin-Mahar-The-Grind.ogg", "game", 0.2)
 
-    CHANGE_GAME_STATE(require 'scripts.gameState.howToPlay', true, nil, nil, nil, nil, nil)
+    CHANGE_GAME_STATE(require('scripts.gameState.' .. initial_state), true)
 end
 
 function love.keypressed(key)
+    if key == "escape"
+        or (key == "f4" and (love.keyboard.isDown("lalt")
+        or love.keyboard.isDown("ralt")))
+    then
+        scene:finish()
+        love.event.quit()
+        return
+    end
+
     local r = scene and scene:keypressed(key)
 end
 
@@ -123,18 +134,8 @@ function love.mousemoved(x, y, dx, dy, istouch)
 end
 
 local km = nil
-
 function love.update(dt)
     km = collectgarbage("count") / 1024.0
-
-    if love.keyboard.isDown("escape")
-        or (love.keyboard.isDown("lalt") and love.keyboard.isDown('f4'))
-        or (love.keyboard.isDown("ralt") and love.keyboard.isDown('f4'))
-    then
-        scene:finish()
-        love.event.quit()
-    end
-
     Pack:update(dt)
     scene:update(dt)
 end
