@@ -383,7 +383,7 @@ function Panel:mouse_pressed(x, y, button)
                 --
             elseif self:is_complete() then
                 PLAY_SFX("plug")
-                PLAY_SFX('countdown')
+                -- PLAY_SFX('countdown')
 
                 dispatch_event(self, Events.complete)
                 local level = self.gamestate:game_get_display_level()
@@ -435,7 +435,7 @@ function Panel:update(dt)
         self.time_bip = self.time_bip + dt
         if self.gamestate:game_get_panel() == self then
             if self.time_bip >= 0.6 then
-                PLAY_SFX('countdown', true)
+                -- PLAY_SFX('countdown', true)
                 self.time_bip = self.time_bip - 0.6
             end
         end

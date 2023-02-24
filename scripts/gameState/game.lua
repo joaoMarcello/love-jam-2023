@@ -273,7 +273,7 @@ State:implements {
         display_shocks:update(dt)
 
         if panel:is_complete()
-            and panel.complete_time >= (0.6 * 3 + 0.3)
+            and panel.complete_time >= (0.6 * 4 + 0.3)
             and not timer:time_is_up()
         then
             prev_panel = panel
@@ -319,6 +319,15 @@ State:implements {
         --
         --
         {
+            name = "Mouse Icon",
+
+            draw = function(self, camera)
+                mouse_icon:draw()
+            end
+        },
+        --
+        --
+        {
             name = "GUI",
             factor_x = -1,
 
@@ -343,15 +352,6 @@ State:implements {
 
                 -- local font = _G.FONT_GUI
                 -- font:print('<color, 1, 1, 1>' .. tostring(State.camera.dx), 32, 32)
-            end
-        },
-        --
-        --
-        {
-            name = "Mouse Icon",
-
-            draw = function(self, camera)
-                mouse_icon:draw()
             end
         },
         --
