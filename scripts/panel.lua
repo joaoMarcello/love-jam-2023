@@ -508,36 +508,7 @@ function Panel:update(dt)
 end
 
 function Panel:my_draw()
-    -- do
-    --     love.graphics.setColor(156 / 255, 96 / 255, 59 / 255, 1)
-    --     -- love.graphics.setColor(139 / 255, 147 / 255, 175 / 255, 1)
-    --     love.graphics.rectangle("fill", self.x - 64, self.y - 64, self.w + 64 * 2, self.h + 64 * 2)
-
-    --     love.graphics.setColor(219 / 255, 164 / 255, 99 / 255, 1)
-    --     love.graphics.rectangle("fill", self.x - 32, self.y - 32, self.w + 64, self.h + 64)
-
-    --     love.graphics.setColor(228 / 255, 210 / 255, 170 / 255, 1)
-    --     love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
-
-    --     love.graphics.setColor(0, 0, 0, 0.5)
-    --     love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
-    --     love.graphics.setColor(0, 0, 0, 0.5)
-    --     love.graphics.rectangle("line", self.x - 32, self.y - 32, self.w + 64, self.h + 64)
-    --     -- love.graphics.rectangle("fill", self.x, self.y + 32 * 6, self.w, 2)
-    -- end
     self.panel_anima:draw_rec(self.x, self.y, self.w, self.h + 64)
-
-    -- if self.cur_socket then
-    --     local s = socket_to_relative(self.cur_socket) - 1
-    --     love.graphics.setColor(0, 0, 1, 0.7)
-    --     love.graphics.rectangle("fill", self.x + s * 32, self.y + self.h, 32, 32)
-    -- end
-
-    -- if self.selected_id then
-    --     local s = socket_to_relative(self.selected_id) - 1
-    --     love.graphics.setColor(1, 1, 0, 0.7)
-    --     love.graphics.rectangle("fill", self.x + s * 32, self.y + 32 * 6, 32, 32)
-    -- end
 
     for i = 1, 4 do
         self.sockets_anima:draw_rec(self.x + (socket_to_relative(i) - 1) * 32, self.y + self.h, 32, 32)
@@ -562,9 +533,6 @@ function Panel:my_draw()
         end
     end
 
-    -- local Font = _G.JM_Font
-    -- Font:print(self:is_complete() and "<color, 1, 1, 1>Complete" or "<color, 1, 1, 1>NOT", self.x + self.w, self.y)
-
     if self:is_complete()
         and self.gamestate:game_get_panel() == self
     then
@@ -580,9 +548,9 @@ end
 function Panel:draw()
     Component.draw(self, self.my_draw)
 
-    if self.is_shaking and not self.__lock then
-        self.shock_anima:draw(self.x, self.y)
-    end
+    -- if self.is_shaking and not self.__lock then
+    --     self.shock_anima:draw(self.x, self.y)
+    -- end
 end
 
 return Panel

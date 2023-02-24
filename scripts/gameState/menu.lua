@@ -21,11 +21,17 @@ local phrase
 ---@type MouseIcon2
 local mouse_icon
 
+---@type love.Image|any
+local logo
+
+---@type JM.Anima
+local logo_anima
 --============================================================================
 State:implements {
     load = function()
         Button:load(_G.FONT_GUI)
         MouseIcon:load()
+        logo = logo or love.graphics.newImage('/data/image/logo.png')
     end,
     --
     --
@@ -78,6 +84,10 @@ State:implements {
         mouse_icon = MouseIcon:new(State)
         mouse_icon.x = bt_start.x + bt_start.w + 16
         mouse_icon.y = bt_start.y
+
+        logo_anima = _G.JM_Anima:new {
+            img = logo
+        }
 
         _G.PLAY_SONG("title")
     end,
@@ -180,6 +190,7 @@ State:implements {
             phrase.__font:pop()
         end
 
+        logo_anima:draw_rec(0, 0, SCREEN_WIDTH, 32 * 8)
         mouse_icon:draw()
     end,
     --

@@ -68,6 +68,7 @@ function Plug:__constructor__(state, wire, args)
         max_filter = 'linear',
         stop_at_the_end = true
     }
+    self.anima_click:set_scale(1.2, 1.2)
 end
 
 function Plug:load()
