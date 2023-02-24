@@ -2,6 +2,7 @@ local Utils = _G.JM_Utils
 local Component = require "scripts.component"
 local Wire = require "scripts.wire"
 local Arrow = require "scripts.arrow"
+local Display = require "scripts.displayText"
 
 ---@type love.Image|any
 local img_socket
@@ -165,6 +166,7 @@ do
     function Panel:load()
         Wire:load()
         Arrow:load()
+        Display:load()
 
         img_socket = img_socket or love.graphics.newImage('/data/image/socket.png')
 
@@ -180,6 +182,8 @@ do
     function Panel:finish()
         Wire:finish()
         Arrow:finish()
+        Display:finish()
+
         local r = img_socket and img_socket:release()
         img_socket = nil
     end
@@ -334,6 +338,17 @@ function Panel:is_complete()
     return true
 end
 
+function Panel:show_text(text, x, y)
+    if not x then
+        local mouseIcon = self.gamestate:game_get_mouse_icon()
+        x = mouseIcon.x
+        y = mouseIcon.y - 64
+    end
+    self.gamestate:game_add_component(
+        Display:new(self.gamestate, { text = text, x = x, y = y })
+    )
+end
+
 --=========================================================================
 function Panel:mouse_pressed(x, y, button)
     if self.is_shaking or self.__lock or self:is_complete() then return end
@@ -389,14 +404,20 @@ function Panel:mouse_pressed(x, y, button)
                 local level = self.gamestate:game_get_display_level()
                 local bonus = (level:get_value() - 1) * 100
 
-                self.gamestate:game_increment_param("score", 500 + bonus)
+                local score = 500 + bonus
+                self.gamestate:game_increment_param("score", score)
+                self:show_text(score)
                 --
             else
                 _G.PLAY_SFX("plug")
 
                 dispatch_event(self, Events.plug)
 
-                self.gamestate:game_increment_param("score", 50)
+                local score = 100
+                self.gamestate:game_increment_param("score", score)
+
+                local mouseIcon = self.gamestate:game_get_mouse_icon()
+                self:show_text(score)
             end
 
             self.selected_id = nil

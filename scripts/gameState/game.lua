@@ -67,7 +67,16 @@ local countdown
 ---@type MouseIcon
 local mouse_icon
 
+local components
 --=========================================================================
+
+function State:game_add_component(obj)
+    table.insert(components, obj)
+end
+
+function State:game_remove_component(index)
+    table.remove(components, index)
+end
 
 function State:game_get_timer()
     return timer
@@ -183,6 +192,8 @@ State:implements {
         mouse_icon.y = 32 * 11
 
         time_endgame = 0
+
+        components = {}
     end,
     --
     --
@@ -237,6 +248,14 @@ State:implements {
         mouse_icon:update(dt)
 
         if not countdown:is_released() then return end
+
+        for i = #components, 1, -1 do
+            local obj = components[i]
+            local r = obj.update and not obj.__remove and obj:update(dt)
+            if obj.__remove then
+                State:game_remove_component(i)
+            end
+        end
 
         -- GAME OVER
         if timer:time_is_up() then
@@ -322,6 +341,11 @@ State:implements {
             name = "Mouse Icon",
 
             draw = function(self, camera)
+                for i = 1, #components do
+                    local obj = components[i]
+                    local r = obj.draw and obj:draw()
+                end
+
                 mouse_icon:draw()
             end
         },
