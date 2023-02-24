@@ -57,7 +57,15 @@ function Icon:__constructor__(state, args)
     local cool = self.anima[States.cool]
     cool:apply_effect("float", { range = 3, speed = 0.6 })
 
+    local prepare = self.anima[States.prepare]
+    -- prepare:set_size(nil, 45)
+    -- prepare.img:setFilter("linear", 'linear')
+
     self.cur_anima = self.anima[self.state]
+
+    for _, a in pairs(self.anima) do
+        a:set_size(64, 64)
+    end
 end
 
 function Icon:load()
@@ -239,13 +247,10 @@ function Icon:update(dt)
 end
 
 function Icon:my_draw()
-    love.graphics.setColor(self:get_color_state())
-    love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
+    -- love.graphics.setColor(self:get_color_state())
+    -- love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
 
-    local frame = self.cur_anima:get_current_frame()
-    frame.ox = 0
-    frame.oy = 0
-    self.cur_anima:draw(self.x, self.y)
+    self.cur_anima:draw_rec(self.x, self.y, 64, 64)
 end
 
 function Icon:draw()
