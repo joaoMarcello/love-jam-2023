@@ -9,6 +9,8 @@ local States = {
     prepare = 4
 }
 
+local imgs
+
 ---@class MouseIcon : JM.Template.Affectable
 local Icon = setmetatable({}, Affectable)
 Icon.__index = Icon
@@ -36,14 +38,31 @@ function Icon:__constructor__(state, args)
     self.state = States.prepare
 
     self.mouseIcon = MouseIcon:new(state)
+
+    local Anima = _G.JM_Anima
+
+    self.anima = {
+        [States.point] = Anima:new { img = imgs[States.point] },
+        [States.grab] = Anima:new { img = imgs[States.grab] },
+        [States.prepare] = Anima:new { img = imgs[States.prepare] },
+        [States.shock] = Anima:new { img = imgs[States.shock] },
+    }
 end
 
 function Icon:load()
     MouseIcon:load()
+
+    imgs = imgs or {
+            [States.point] = love.graphics.newImage('/data/image/glove point.png'),
+            [States.prepare] = love.graphics.newImage('/data/image/glove prepare.png'),
+            [States.grab] = love.graphics.newImage('/data/image/glove grab.png'),
+            [States.shock] = love.graphics.newImage('/data/image/glove shock.png'),
+        }
 end
 
 function Icon:finish()
     MouseIcon:finish()
+    imgs = nil
 end
 
 ---@param state MouseIcon.States
@@ -172,7 +191,7 @@ function Icon:update(dt)
 
         if wire then
             self.x = wire.plug.x + 32 - 10
-            self.y = wire.plug.y - 10
+            self.y = wire.plug.y - 16
         end
 
         self:set_state(States.grab)
@@ -197,6 +216,10 @@ function Icon:update(dt)
         -- if self.x < camera.x then self.x = camera.x end
     end
 
+    ---@type JM.Anima
+    local cur_anima = self.anima[self.state]
+    cur_anima:update(dt)
+
     if self.state ~= States.grab then
         self.mouseIcon.x = self.x
         self.mouseIcon.y = self.y
@@ -212,6 +235,13 @@ end
 function Icon:my_draw()
     love.graphics.setColor(self:get_color_state())
     love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
+
+    ---@type JM.Anima
+    local cur_anima = self.anima[self.state]
+    local frame = cur_anima:get_current_frame()
+    frame.ox = 0
+    frame.oy = 0
+    cur_anima:draw(self.x, self.y)
 end
 
 function Icon:draw()

@@ -31,14 +31,20 @@ function Lamp:__constructor__(state, wire, args)
     self.wire = wire
 
     local color = wire.color_hidden
-    self.anima_off = _G.JM_Anima:new { img = imgs[color][0] }
+    self.anima_off = _G.JM_Anima:new { img = imgs[color][0], }
     self.anima_on = _G.JM_Anima:new { img = imgs[color][1] }
 
     self.light = _G.JM_Anima:new { img = img_light }
     self.light:set_size(60, 60)
     self.light:set_color2(unpack(color))
     self.light:set_color2(nil, nil, nil, 0.8)
-    self.light:apply_effect("ghost", { speed = 0.8, min = 0.6 })
+
+    local cond = self.anima_on.img == imgs[wire.Colors.yellow][1]
+    self.light:apply_effect("ghost", {
+        speed = 0.8,
+        min = (cond and 0.2 or 0.7),
+        max = (cond and 0.5 or 1)
+    })
 end
 
 ---@param wire Game.Component.Wire
