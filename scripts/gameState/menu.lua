@@ -37,6 +37,7 @@ State:implements {
         Button:load(_G.FONT_GUI)
         MouseIcon:load()
         logo = logo or love.graphics.newImage('/data/image/logo.png')
+        logo:setFilter("linear", 'linear')
     end,
     --
     --
@@ -98,8 +99,10 @@ State:implements {
         mouse_icon.y = bt_start.y
 
         logo_anima = _G.JM_Anima:new {
-            img = logo
+            img = logo,
+            max_filter = 'linear'
         }
+        logo_anima:set_size(SCREEN_WIDTH)
 
         _G.PLAY_SONG("title")
     end,
