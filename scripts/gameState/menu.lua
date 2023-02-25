@@ -9,7 +9,7 @@ State.camera:toggle_grid()
 State.camera:toggle_world_bounds()
 State.camera.border_color = { 0, 0, 0, 0 }
 
-State:set_color(0.8, 0.8, 1, 1)
+State:set_color(50 / 255, 34 / 255, 25 / 255, 1)
 --============================================================================
 local buttons
 
@@ -27,6 +27,12 @@ local logo
 ---@type JM.Anima
 local logo_anima
 
+---@type love.Image
+local background
+
+---@type JM.Anima
+local back_anima
+
 function State:menu_get_mouse_icon()
     return mouse_icon
 end
@@ -37,7 +43,7 @@ State:implements {
         Button:load(_G.FONT_GUI)
         MouseIcon:load()
         logo = logo or love.graphics.newImage('/data/image/logo.png')
-        logo:setFilter("linear", 'linear')
+        background = background or love.graphics.newImage('/data/image/background.png')
     end,
     --
     --
@@ -103,6 +109,11 @@ State:implements {
             max_filter = 'linear'
         }
         logo_anima:set_size(SCREEN_WIDTH)
+
+        back_anima = _G.JM_Anima:new {
+            img = background
+        }
+        back_anima:set_size(SCREEN_WIDTH)
 
         _G.PLAY_SONG("title")
     end,
@@ -180,6 +191,9 @@ State:implements {
     --
     --
     draw = function(camera)
+        back_anima:draw_rec(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+
+
         love.graphics.setColor(0.1, 0.1, 0.1, 1)
         local b1 = buttons[1]
         local b3 = buttons[3]
@@ -190,6 +204,7 @@ State:implements {
         local pw = pr - px
         local ph = pb - py
         love.graphics.rectangle("fill", px, py, pw, ph)
+
 
         for i = 1, #buttons do
             ---@type Button
