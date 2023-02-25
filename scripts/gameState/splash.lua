@@ -155,9 +155,9 @@ State:implements({
     --
     --
     keypressed = function(key)
-        if key == "space" then
-            CHANGE_GAME_STATE(State, false, false, false, false, true, false)
-        end
+        -- if key == "space" then
+        --     CHANGE_GAME_STATE(State, false, false, false, false, true, false)
+        -- end
     end,
     --
     --

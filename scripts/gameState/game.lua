@@ -305,7 +305,7 @@ State:implements {
             camera.follow_speed_x = 0
 
             display_level:increment()
-            if display_level:get_value() % 2 == 1 then
+            if display_level:get_value() % 3 == 0 then
                 timer:increment(10)
             end
         end
