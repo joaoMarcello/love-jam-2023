@@ -48,8 +48,8 @@ State:implements {
         local blue = string.format("<color, %.2f, %.2f, %.2f>", 88 / 255, 141 / 255, 190 / 255)
         text_obj = font:generate_phrase(
             string.format(
-                "Game made for Löve Jam 2023. Code and art by <bold>%sJoão Moreira</color></bold no-space>.\n \n Music and SFX were taken from free sources.",
-                blue), 32, 32,
+                "Game made for <bold>Löve Jam 2023</bold no-space>. Code and art by <bold>%sJoão Moreira</color></bold no-space>.\n \n Music and SFX were taken from free sources (<font-size=10>freesound.org, musonpen.org</font-size>).\n \n <bold>Song</bold no-space>:\n \t'Pumped' by %s<bold>Justin Mahar</bold></color no-space>.\n \n <bold>SFX</bold no-space>: \n \t'Click' by <bold>%slebaston100</color></bold no-space>.\n \t'Tick-Tock' by <bold> %s FoolBoyMedia </color></bold no-space>.\n \t'Electric Shock 2 Hit</font-size no-space>' by <bold>%sThe-Sacha-Rush</color></bold no-space>.\n \t'Bip' by <bold>%sSlanesh</color></bold no-space>.\n \t'Gun Shoot' by <bold>%sMichel Hollicardo</color></bold no-space>.\n \n <bold> Fonts</bold>(<font-size=9>from Google Fonts</font-size>):\n \t<bold>Black Ops One</bold> by <bold>%sJames Grieshaber</color></bold> and <bold>%sEben Sorkin</bold></color no-space>.\n \t<bold>Orbitron</bold> by <bold>%sMatt McInerney</color></bold no-space>.",
+                blue, blue, blue, blue, blue, blue, blue, blue, blue, blue), 32, 32,
             SCREEN_WIDTH, "left")
 
         mouse_icon = MouseIcon:new(State)
@@ -104,7 +104,7 @@ State:implements {
         button_skip:draw()
 
         font:push()
-        font:set_font_size(13)
+        font:set_font_size(11)
         text_obj:draw(32, 32, "left")
         font:pop()
         mouse_icon:draw()
