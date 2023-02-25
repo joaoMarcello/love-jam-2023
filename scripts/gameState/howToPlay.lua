@@ -41,11 +41,14 @@ State:implements {
         mouse_icon.y = button_skip.y - mouse_icon.h
 
         local font = FONT_GUI
+        font:push()
+        font:set_font_size(12)
         local pw, ph
-        local how_to, pw, ph = font:generate_phrase("<bold> <color> <effect=ghost, min=0.2, speed=1.3>HOW TO PLAY", 0, 0,
+        local how_to, pw, ph = font:generate_phrase(
+            "<bold> <color> <effect=ghost, min=0.2, speed=1.3>HOW TO PLAY", 0, 0,
             SCREEN_WIDTH, "center")
 
-        local objective_py = 16 + ph + 3
+        local objective_py = 64 + ph + 3
         local objective, pw, ph = font:generate_phrase(
             "<color, 0, 0, 1> <font-size=16>Objective</font-size></color no-space>:", 32,
             objective_py, SCREEN_WIDTH, "left")
@@ -58,16 +61,18 @@ State:implements {
             SCREEN_WIDTH, "left"
         )
 
-        local control_py = objective_text_py + ph + 20
+        local control_py = objective_text_py + ph + 32
         local control, pw, ph = font:generate_phrase("<color, 0, 0, 1> <font-size=16>Controls</color no-space>:", 32,
             control_py,
             SCREEN_WIDTH, "left")
 
         local control_text_py = control_py + ph + 3
         local control_text = font:generate_phrase(
-            "- Move the <bold>glove</bold> with mouse.\n - Click the mouse's left button to grab a plug (click again to connect it to a socket). \n - Release the plug pressing the mouse's right button.",
+            "- Move the <bold>glove</bold> with mouse.\n - Click the mouse's left button to grab a plug (click again to connect it to a socket). \n - Release the plug pressing the mouse's right button. \n - Press Enter/Return to <bold>pause</bold> the game.",
             64, control_text_py, SCREEN_WIDTH,
             "left")
+
+        font:pop()
 
         text_obj = {
             { obj = how_to,         x = 32,           y = 16,                size = font.__font_size },
@@ -140,7 +145,13 @@ State:implements {
             ---@type JM.Font.Phrase
             local phrase = text_obj[i].obj
 
+            local font = phrase.__font
+            font:push()
+            if not phrase.text:match("HOW TO PLAY") then
+                font:set_font_size(12)
+            end
             phrase:draw(text_obj[i].x or 32, text_obj[i].y or 0, text_obj[i].align or "center")
+            font:pop()
         end
 
         mouse_icon:draw()

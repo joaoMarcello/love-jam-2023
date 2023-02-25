@@ -78,16 +78,19 @@ State:implements {
             bt_quit
         }
 
-        local font = _G.JM_Font:get_font("komika text")
+        local font = _G.FONT_GUI
         if font then
-            font:push()
-            font:set_font_size(3)
-            phrase = font:generate_phrase(
-                "This game was made for <bold>Löve Jam 2023</bold no-space>.",
-                0,
-                32, SCREEN_WIDTH,
-                "center")
-            font:pop()
+            -- local text = "This game was made for <bold>Löve Jam 2023</bold no-space>."
+
+            -- text = "A Game by JM"
+            -- font:push()
+            -- font:set_font_size(3)
+            -- phrase = font:generate_phrase(
+            --     text,
+            --     0,
+            --     32, SCREEN_WIDTH,
+            --     "center")
+            -- font:pop()
         end
 
         mouse_icon = MouseIcon:new(State)
