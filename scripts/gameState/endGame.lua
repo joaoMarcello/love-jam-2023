@@ -167,7 +167,7 @@ State:implements {
                     local right = SCREEN_WIDTH - px
 
                     local color1 = "<color, 0.2, 0.2, 0.2>"
-                    local color2 = string.format("<color, %.2f, %.2f, %.2f>", 0.3, 0.3, 0.3)
+                    local color2 = string.format("<color, %.2f, %.2f, %.2f>", 1, 173 / 255, 81 / 255)
 
                     font:push()
 
