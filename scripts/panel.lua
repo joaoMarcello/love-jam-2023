@@ -432,7 +432,7 @@ function Panel:mouse_pressed(x, y, button)
                 local level = self.gamestate:game_get_display_level()
                 local bonus = 0 --(level:get_value() - 1) * 100
 
-                local score = 500 + bonus
+                local score = 300 + bonus
                 self.gamestate:game_increment_param("score", score)
                 self:show_text(score)
                 --
