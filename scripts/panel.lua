@@ -88,13 +88,14 @@ function Panel:__constructor__(state, args)
     self.wires = {}
     self.wires_by_id = {}
     self.wires_by_last = {}
+    self.wires_by_target = {}
 
     for i = 1, 3, 2 do
         local wire = Wire:new(state, self, { id = i })
         table.insert(self.wires, wire)
         self.wires_by_id[i] = wire
         self.wires_by_last[wire.socket_id] = wire
-        -- break
+        self.wires_by_target[wire.target] = wire
     end
 
     for i = 2, 4, 2 do
@@ -102,18 +103,12 @@ function Panel:__constructor__(state, args)
         table.insert(self.wires, wire)
         self.wires_by_id[i] = wire
         self.wires_by_last[wire.socket_id] = wire
-        -- break
+        self.wires_by_target[wire.target] = wire
     end
 
     table.sort(self.wires, function(a, b)
         return a.draw_order < b.draw_order
     end)
-
-    -- for i = 1, 4 do
-    --     ---@type Game.Component.Wire
-    --     local wire = self.wires_by_id[i]
-    --     local r = wire and wire:set_hidden_color(Colors[i])
-    -- end
 
     self.n_wires = #self.wires
 
@@ -132,10 +127,10 @@ function Panel:__constructor__(state, args)
     )
 
     self.arrows = {
-        Arrow:new(self.gamestate, self, { id = 1 }),
-        Arrow:new(self.gamestate, self, { id = 2 }),
-        Arrow:new(self.gamestate, self, { id = 3 }),
-        Arrow:new(self.gamestate, self, { id = 4 }),
+        Arrow:new(self.gamestate, self, self.wires_by_target[1], { id = 1 }),
+        Arrow:new(self.gamestate, self, self.wires_by_target[2], { id = 2 }),
+        Arrow:new(self.gamestate, self, self.wires_by_target[3], { id = 3 }),
+        Arrow:new(self.gamestate, self, self.wires_by_target[4], { id = 4 }),
     }
 
     local Anima = _G.JM_Anima
@@ -274,6 +269,39 @@ function Panel:get_socket(wire)
     end
 
     return socket_to_relative(s), s
+end
+
+local target_result = {}
+function Panel:get_target()
+    local min = 1
+    local max = 4
+
+    local check_reset = function()
+        local complete = true
+        for i = min, max do
+            if not target_result[i] then
+                complete = false
+            end
+        end
+        if complete then target_result = {} end
+    end
+
+    local result = math.random(min, max)
+
+    if not target_result[result] then
+        target_result[result] = true
+    else
+        for i = min, max do
+            if not target_result[i] then
+                target_result[i] = true
+                result = i
+                break
+            end
+        end
+    end
+
+    check_reset()
+    return result
 end
 
 ---@param wire Game.Component.Wire
@@ -475,7 +503,7 @@ function Panel:update(dt)
         self.cur_socket = Utils:clamp(self.cur_socket, 1, 4)
 
         ---@type Game.Component.Wire
-        local wire = self.wires_by_id[self.cur_socket]
+        local wire = self.wires_by_target[self.cur_socket]
         if wire and wire:is_plugged() then self.cur_socket = nil end
     else
         self.cur_socket = nil

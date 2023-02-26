@@ -255,6 +255,8 @@ function Wire:__constructor__(state, panel, args)
 
     self.pieces_track = nil
 
+    self.target = panel:get_target()
+
     self.plug = Plug:new(state, self, {
 
     })
@@ -430,12 +432,12 @@ end
 
 function Wire:try_plug(socket)
     if self.state ~= States.plugged then
-        if socket ~= self.id then
+        if socket ~= self.target then
             return false
         end
 
         self.state = States.plugged
-        self.pieces_track = self:get_track_pieces(self.id)
+        self.pieces_track = self:get_track_pieces(self.target)
         self.color__ = self.color_hidden or Colors.white
         self.plug:plug()
         return true
@@ -489,7 +491,7 @@ function Wire:draw()
 
     -- Pack.Font:print("" .. self.pos[1] .. "-" .. self.pos[2] .. "-" .. self.pos[3], self.x, self.y - 20)
 
-    -- Pack.Font:print(self.pos_init, self.x, self.y - 40)
+    -- Pack.Font:print(self.target, self.x, self.y - 40)
 end
 
 return Wire

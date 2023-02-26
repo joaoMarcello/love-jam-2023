@@ -19,7 +19,7 @@ Arrow.__index = Arrow
 ---@param state GameState.Game
 ---@param panel Game.Component.Panel
 ---@return Arrow
-function Arrow:new(state, panel, args)
+function Arrow:new(state, panel, wire, args)
     args = args or {}
     args.x = args.x or (32 * 10)
     args.y = args.y or (panel.y + panel.h - 64)
@@ -27,13 +27,14 @@ function Arrow:new(state, panel, args)
     args.h = 32
 
     local obj = setmetatable(Component:new(state, args), self)
-    Arrow.__constructor__(obj, state, panel, args)
+    Arrow.__constructor__(obj, state, panel, wire, args)
     return obj
 end
 
 ---@param state GameState.Game
 ---@param panel Game.Component.Panel
-function Arrow:__constructor__(state, panel, args)
+---@param wire Game.Component.Wire
+function Arrow:__constructor__(state, panel, wire, args)
     self.gamestate = state
     self.panel = panel
     self.id = args.id or 1
@@ -42,9 +43,9 @@ function Arrow:__constructor__(state, panel, args)
     self:set_visible(false)
 
     local img_type = img_red
-    img_type = self.id == 2 and img_green or img_type
-    img_type = self.id == 3 and img_blue or img_type
-    img_type = self.id == 4 and img_yellow or img_type
+    img_type = wire.id == 2 and img_green or img_type
+    img_type = wire.id == 3 and img_blue or img_type
+    img_type = wire.id == 4 and img_yellow or img_type
 
     self.anima = _G.JM_Anima:new {
         img = img_type,
@@ -76,7 +77,7 @@ function Arrow:update(dt)
     local panel = self.panel
 
     ---@type Game.Component.Wire
-    local wire = self.panel.wires_by_id[self.id]
+    local wire = self.panel.wires_by_target[self.id]
 
     if not panel.selected_id
         or panel:is_complete()
