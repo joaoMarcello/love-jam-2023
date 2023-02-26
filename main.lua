@@ -1,4 +1,6 @@
 local love = _G.love
+love.filesystem.setIdentity("WIRES")
+
 Pack = require "jm-love2d-package.init"
 
 math.randomseed(os.time())
