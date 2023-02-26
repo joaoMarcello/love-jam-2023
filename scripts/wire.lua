@@ -79,8 +79,11 @@ function Wire:__constructor__(state, panel, args)
     self.gamestate = state
     self.panel = panel
 
+    local catch
     local value = function()
-        return math.random() * 0.2 + 0.9
+        if catch then return catch end
+        catch = math.random() * 0.2 + 0.55 --0.2 + 0.9
+        return catch
     end
 
     self.color__ = _G.JM_Utils:get_rgba(value(), value(), value(), 1)

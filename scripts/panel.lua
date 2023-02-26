@@ -458,7 +458,7 @@ function Panel:mouse_pressed(x, y, button)
     x = mouseIcon.x
     y = mouseIcon.y
 
-    if x <= (self.x + self.w) and x >= self.x
+    if x <= (self.x + self.w + 16) and x >= (self.x - 16)
         and y >= (self.y + 32 * 6 - 16) and y <= (self.y + 32 * 7)
     then
         local wire = self:selected_wire()
@@ -467,7 +467,7 @@ function Panel:mouse_pressed(x, y, button)
             wire:turn_inactive()
         end
 
-        self.selected_id = math.floor((x - self.x) / (self.w / 4)) + 1
+        self.selected_id = math.floor((x - self.x) / ((self.w) / 4)) + 1
         self.selected_id = Utils:clamp(self.selected_id, 1, 4)
 
         wire = self:selected_wire()
@@ -496,10 +496,10 @@ function Panel:update(dt)
     local mouseIcon2 = self.gamestate:game_get_mouse_icon().mouseIcon
     mx, my = mouseIcon2.x, mouseIcon2.y
 
-    if mx <= self.x + self.w and mx >= self.x
+    if mx <= (self.x + self.w + 16) and mx >= (self.x - 16)
         and my >= (self.y + self.h - 32 * 2)
     then
-        self.cur_socket = math.floor((mx - self.x) / (self.w / 4)) + 1
+        self.cur_socket = math.floor((mx - self.x - 16) / ((self.w + 16) / 4)) + 1
         self.cur_socket = Utils:clamp(self.cur_socket, 1, 4)
 
         ---@type Game.Component.Wire

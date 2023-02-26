@@ -214,9 +214,9 @@ State:implements {
             State.camera:toggle_world_bounds()
         end
 
-        if key == 'p' then
-            State:pause(10)
-        end
+        -- if key == 'p' then
+        --     State:pause(10)
+        -- end
 
         if not timer:time_is_up()
             and not panel:is_complete()
