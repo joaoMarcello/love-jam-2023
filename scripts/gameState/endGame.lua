@@ -1,5 +1,3 @@
-local Pack = _G.JM_Love2D_Package
-
 local Button = require "scripts.button_endgame"
 local MouseIcon = require "scripts.mouseIcon2"
 

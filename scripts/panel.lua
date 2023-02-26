@@ -402,7 +402,7 @@ function Panel:mouse_pressed(x, y, button)
 
                 dispatch_event(self, Events.complete)
                 local level = self.gamestate:game_get_display_level()
-                local bonus = (level:get_value() - 1) * 100
+                local bonus = 0 --(level:get_value() - 1) * 100
 
                 local score = 500 + bonus
                 self.gamestate:game_increment_param("score", score)
