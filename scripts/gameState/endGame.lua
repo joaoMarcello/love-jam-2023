@@ -12,8 +12,8 @@ State.camera:toggle_world_bounds()
 State.camera.border_color = { 0, 0, 0, 0 }
 
 love.graphics.setColor(77 / 255, 52 / 255, 21 / 255)
--- State:set_color(0.8, 0.8, 1, 1)
-State:set_color(50 / 255, 34 / 255, 25 / 255, 1)
+State:set_color(0.9, 0.9, 0.9, 1)
+-- State:set_color(50 / 255, 34 / 255, 25 / 255, 1)
 --==========================================================================
 
 ---@type GameState.Game|nil
@@ -154,8 +154,8 @@ State:implements {
 
             ---@param camera JM.Camera.Camera
             draw = function(self, camera)
-                -- love.graphics.setColor(109 / 255, 117 / 255, 141 / 255, 1)
-                love.graphics.setColor(0.9, 0.9, 0.9)
+                -- love.graphics.setColor(0.9, 0.9, 0.9)
+                love.graphics.setColor(50 / 255, 34 / 255, 25 / 255, 1)
                 local w = SCREEN_WIDTH - 32 * 3 * 2
                 local h = 32 * 13
                 love.graphics.rectangle("fill", SCREEN_WIDTH / 2 - w / 2, 32, w, h)
@@ -166,12 +166,12 @@ State:implements {
                     local px, py = 32 * 4, 32 * 2
                     local right = SCREEN_WIDTH - px
 
-                    local color1 = "<color, 0.2, 0.2, 0.2>"
+                    local color1 = "<color, 1, 1, 1>"
                     local color2 = string.format("<color, %.2f, %.2f, %.2f>", 1, 173 / 255, 81 / 255)
 
                     font:push()
 
-                    font:printf("<color, 0.2, 0.2, 0.2>END GAME", px, py, "center", right)
+                    font:printf("<color, 1, 1, 0>END GAME", px, py, "center", right)
 
                     --======================================================
                     -- font:printf("<color, 0, 0, 0> Max Level: " .. level, px + 1, py + 32 * 2 + 1, "left", right)
