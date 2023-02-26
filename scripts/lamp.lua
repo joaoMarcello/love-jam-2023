@@ -40,10 +40,18 @@ function Lamp:__constructor__(state, wire, args)
     self.light:set_color2(nil, nil, nil, 0.8)
 
     local cond = self.anima_on.img == imgs[wire.Colors.yellow][1]
+    local min, max = 0.7, 1
+
+    if cond then
+        min, max = 0.2, 0.6
+    elseif self.anima_on.img == imgs[wire.Colors.red][1] then
+        min, max = 0.5, 0.8
+    end
+
     self.light:apply_effect("ghost", {
         speed = 0.8,
-        min = (cond and 0.2 or 0.7),
-        max = (cond and 0.5 or 1)
+        min = min,
+        max = max
     })
 end
 

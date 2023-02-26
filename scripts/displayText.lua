@@ -19,7 +19,12 @@ end
 function Display:__constructor__(state, args)
     self.text = args.text and tostring(args.text) or "None"
     self.text = "<bold>" .. self.text
-    self.text_white = "<color, 1, 1, 0>" .. self.text
+    self.text_white = "<color, 1, 1, 1>" .. self.text
+
+    -- self.text_yellow = string.format("<color, %.2f, %.2f, %.2f>",
+    --         122 / 255,
+    --         130 / 255,
+    --         152 / 255) .. self.text
 
     local text_obj = font:generate_phrase(self.text, self.x, self.y, math.huge, "left")
     local text_w = text_obj:width(text_obj:get_lines(self.x))
@@ -55,6 +60,8 @@ function Display:update(dt)
 end
 
 function Display:my_draw()
+    -- font:print(self.text_yellow, self.x - 1, self.y)
+    -- font:print(self.text_yellow, self.x, self.y - 1)
     font:print(self.text, self.x + 1, self.y + 1)
     font:print(self.text_white, self.x, self.y)
 end

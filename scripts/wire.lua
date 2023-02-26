@@ -12,10 +12,10 @@ local States = {
 
 ---@enum Game.Component.Wire.Colors
 local Colors = {
-    red = _G.JM_Utils:get_rgba2(180, 32, 42, 255),
-    green = _G.JM_Utils:get_rgba2(89, 193, 53, 255),
+    red = _G.JM_Utils:get_rgba2(191, 0, 16, 255),
+    green = _G.JM_Utils:get_rgba2(36, 172, 57, 255),
     blue = _G.JM_Utils:get_rgba2(40, 92, 196, 255),
-    yellow = _G.JM_Utils:get_rgba2(240, 235, 108, 255),
+    yellow = _G.JM_Utils:get_rgba2(255, 241, 0, 255),
     white = { 0.8, 0.8, 0.8, 1 }
 }
 Colors[1] = Colors.red
@@ -82,7 +82,7 @@ function Wire:__constructor__(state, panel, args)
     local catch
     local value = function()
         if catch then return catch end
-        catch = math.random() * 0.2 + 0.55 --0.2 + 0.9
+        catch = math.random() * 0.17 + 0.6 --0.2 + 0.9
         return catch
     end
 

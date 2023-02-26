@@ -71,6 +71,7 @@ function Arrow:__constructor__(state, panel, wire, args)
         img = img_type,
         max_filter = 'linear'
     }
+    self.anima:set_size(nil, 38)
 end
 
 function Arrow:load()
@@ -117,11 +118,11 @@ function Arrow:my_draw()
     -- love.graphics.setColor(1, 0, 0)
     -- love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
 
-    self.anima:set_color2(0, 0, 0, 0.3)
-    self.anima:set_scale(0.9, 0.9)
-    self.anima:draw(self.x + self.w / 2, self.y + self.h / 2 + 5)
-    self.anima:set_color2(1, 1, 1, 1)
-    self.anima:set_scale(1, 1)
+    -- self.anima:set_color2(0, 0, 0, 0.3)
+    -- self.anima:set_scale(0.9, 0.9)
+    -- self.anima:draw(self.x + self.w / 2, self.y + self.h / 2 + 5)
+    -- self.anima:set_color2(1, 1, 1, 1)
+    -- self.anima:set_scale(1, 1)
 
     self.anima:draw(self.x + self.w / 2, self.y + self.h / 2)
 end
