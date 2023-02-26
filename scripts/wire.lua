@@ -23,8 +23,34 @@ Colors[2] = Colors.green
 Colors[3] = Colors.blue
 Colors[4] = Colors.yellow
 
-
 local img
+
+local random_result = {}
+local function get_random_color()
+    local result = math.random(1, 4)
+    if not random_result[result] then
+        random_result[result] = true
+    else
+        for i = 1, 4 do
+            if not random_result[i] then
+                random_result[i] = true
+                result = i
+                break
+            end
+        end
+    end
+
+    local complete = true
+    for i = 1, 4 do
+        if not random_result[i] then
+            complete = false
+            break
+        end
+    end
+    if complete then random_result = {} end
+
+    return Colors[result]
+end
 
 ---@class Game.Component.Wire: GameComponent
 local Wire = setmetatable({}, Component)
@@ -63,7 +89,8 @@ function Wire:__constructor__(state, panel, args)
     self.pos_init = ((self.id - 1) * 3) + 1
     self.x = self.panel.x + 32 * (self.pos_init - 1)
 
-    self:set_hidden_color(Colors[self.id])
+
+    self:set_hidden_color(get_random_color())
 
     ---@type Game.Component.Wire.States
     self.state = States.inactive

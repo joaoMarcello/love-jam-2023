@@ -12,6 +12,26 @@ local img_blue
 ---@type love.Image|any
 local img_yellow
 
+---@param wire Game.Component.Wire
+local function is_red(wire)
+    return wire.color_hidden == wire.Colors.red
+end
+
+---@param wire Game.Component.Wire
+local function is_blue(wire)
+    return wire.color_hidden == wire.Colors.blue
+end
+
+---@param wire Game.Component.Wire
+local function is_green(wire)
+    return wire.color_hidden == wire.Colors.green
+end
+
+---@param wire Game.Component.Wire
+local function is_yellow(wire)
+    return wire.color_hidden == wire.Colors.yellow
+end
+
 ---@class Arrow : GameComponent
 local Arrow = setmetatable({}, Component)
 Arrow.__index = Arrow
@@ -43,9 +63,9 @@ function Arrow:__constructor__(state, panel, wire, args)
     self:set_visible(false)
 
     local img_type = img_red
-    img_type = wire.id == 2 and img_green or img_type
-    img_type = wire.id == 3 and img_blue or img_type
-    img_type = wire.id == 4 and img_yellow or img_type
+    img_type = is_green(wire) and img_green or img_type
+    img_type = is_blue(wire) and img_blue or img_type
+    img_type = is_yellow(wire) and img_yellow or img_type
 
     self.anima = _G.JM_Anima:new {
         img = img_type,
