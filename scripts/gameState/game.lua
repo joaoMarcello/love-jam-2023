@@ -136,7 +136,11 @@ State:implements {
         gui_font = _G.FONT_GUI
 
         local success, result = pcall(function()
-            return love.filesystem.load('save.lua')
+            local info = love.filesystem.getInfo('save.lua')
+            if info then
+                return love.filesystem.load('save.lua')
+            end
+            return nil
         end)
 
         local hi_score = success and result and result() or 200

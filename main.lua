@@ -101,7 +101,7 @@ function love.load()
     Sound:add_sfx("/data/sfx/31780__slanesh__bip-cutted.ogg", "countdown")
     Sound:add_sfx("/data/sfx/52593_michel-hollicardo_gun_shoot_cutted.ogg", "shoot", 0.1)
 
-    Sound:add_song("/data/song/Justin-Mahar-Pumped.ogg", "title")
+    -- Sound:add_song("/data/song/Justin-Mahar-Pumped.ogg", "title")
 
     CHANGE_GAME_STATE(require('scripts.gameState.' .. initial_state), true)
 end

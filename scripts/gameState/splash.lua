@@ -117,7 +117,7 @@ State:implements({
 
         show_love = false
 
-        affect = _G.JM_Affectable:new()
+        affect = Pack.Affectable:new()
         affect.ox = SCREEN_WIDTH / 2 - 32
         affect.oy = SCREEN_HEIGHT / 2
 
@@ -135,12 +135,12 @@ State:implements({
 
         w = SCREEN_WIDTH * 7
         h = SCREEN_HEIGHT * 7
-        anima = Anima:new { img = img }
+        anima = Anima:new { img = img, max_filter = "linear", min_filter = "linear" }
         anima:set_size(w, h)
         max_sx = anima.scale_x
         max_sy = anima.scale_y
 
-        heart_anima = Anima:new { img = heart }
+        heart_anima = Anima:new { img = heart, max_filter = "linear", min_filter = "linear" }
         local eff = heart_anima:apply_effect("pulse", { speed = 0.3, duration = 0.3 })
         eff:set_final_action(function()
             show_love = true
