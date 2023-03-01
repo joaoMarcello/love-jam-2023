@@ -1,6 +1,6 @@
-local Pack = _G.Pack
-local Utils = _G.JM_Utils
-local Anima = _G.JM_Anima
+local Pack = _G.JM_Love2D_Package
+local Utils = Pack.Utils
+local Anima = Pack.Anima
 
 local SCREEN_HEIGHT = 32 * 12
 local SCREEN_WIDTH = SCREEN_HEIGHT * 1.5
@@ -12,7 +12,16 @@ State.camera:toggle_grid()
 State.camera:toggle_world_bounds()
 State.camera.border_color = { 0, 0, 0, 0 }
 --===========================================================================
-
+local loveSetColor, lovePolygon, loveNewImage, loveNewSource, loveRectangle
+do
+    local loveGraphics = love.graphics
+    loveSetColor = loveGraphics.setColor
+    lovePolygon = loveGraphics.polygon
+    loveNewImage = loveGraphics.newImage
+    loveNewSource = love.audio.newSource
+    loveRectangle = loveGraphics.rectangle
+end
+--===========================================================================
 local px1, px2
 local speed = 32 * 10
 
@@ -35,12 +44,12 @@ local delay
 
 local img
 
----@type love.Image
+---@type love.Image|any
 local heart
 
 local love_img
 
----@type love.Image
+---@type love.Image|any
 local made_with_img
 
 ---@type JM.Anima
@@ -57,7 +66,7 @@ local anima_made_with
 
 local show_love
 
----@type love.Source
+---@type love.Source|any
 local sound
 
 local is_playing
@@ -67,8 +76,8 @@ local icon
 
 local function draw_rects()
     --  BLUE
-    love.graphics.setColor(39 / 255, 170 / 255, 255 / 255)
-    love.graphics.polygon("fill",
+    loveSetColor(39 / 255, 170 / 255, 255 / 255)
+    lovePolygon("fill",
         px1 + 64, SCREEN_HEIGHT / 2,
         (px1 + 64 + SCREEN_WIDTH * 1.5), SCREEN_HEIGHT / 2,
         (px1 + SCREEN_WIDTH * 1.5), SCREEN_HEIGHT * 1.5,
@@ -76,8 +85,8 @@ local function draw_rects()
     )
 
     -- PINK
-    love.graphics.setColor(231 / 255, 74 / 255, 153 / 255)
-    love.graphics.polygon("fill",
+    loveSetColor(231 / 255, 74 / 255, 153 / 255)
+    lovePolygon("fill",
         px2 + 64, -SCREEN_HEIGHT / 2,
         (px2 + 64 + SCREEN_WIDTH * 1.3), -SCREEN_HEIGHT / 2,
         (px2 + SCREEN_WIDTH * 1.3), SCREEN_HEIGHT * 0.5,
@@ -87,18 +96,18 @@ end
 
 State:implements({
     load = function()
-        img = love.graphics.newImage('/data/image/mask_splash_03.png')
+        img = loveNewImage('/data/image/mask_splash_03.png')
         img:setFilter("linear", "linear")
 
-        heart = love.graphics.newImage("/data/image/love-heart-logo.png")
+        heart = loveNewImage("/data/image/love-heart-logo.png")
         heart:setFilter("linear", 'linear')
 
-        love_img = love.graphics.newImage("/data/image/love-logo-512x256.png")
+        love_img = loveNewImage("/data/image/love-logo-512x256.png")
         love_img:setFilter("linear", "linear")
 
-        made_with_img = love.graphics.newImage("/data//image/made-with.png")
+        made_with_img = loveNewImage("/data//image/made-with.png")
 
-        sound = love.audio.newSource('/data/sfx/simple-clean-logo.ogg', "static")
+        sound = loveNewSource('/data/sfx/simple-clean-logo.ogg', "static")
         sound:setLooping(false)
     end,
     --
@@ -168,6 +177,13 @@ State:implements({
         heart:release()
         sound:stop()
         sound:release()
+        made_with_img:release()
+
+        img = nil
+        love_img = nil
+        heart = nil
+        sound = nil
+        made_with_img = nil
     end,
     --
     --
@@ -181,8 +197,6 @@ State:implements({
         if delay > 0 then
             return
         end
-
-
 
         speed = speed + acc * dt
 
@@ -243,8 +257,10 @@ State:implements({
     --
     --
     draw = function(camera)
-        love.graphics.setColor(233 / 255, 245 / 255, 255 / 255)
-        love.graphics.rectangle("fill", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+        if rad ~= total_spin and not show_love then
+            loveSetColor(233 / 255, 245 / 255, 255 / 255)
+            loveRectangle("fill", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+        end
 
         local r = affect and affect:draw(draw_rects)
 
