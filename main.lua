@@ -9,8 +9,8 @@ love.graphics.setDefaultFilter("nearest", "nearest")
 love.mouse.setVisible(true)
 love.mouse.setRelativeMode(true)
 
-collectgarbage("setstepmul", 300)
-collectgarbage("setpause", 200)
+collectgarbage("setstepmul", 150)
+collectgarbage("setpause", 250)
 
 ---@type JM.Font.Font|any
 FONT_GUI = nil
